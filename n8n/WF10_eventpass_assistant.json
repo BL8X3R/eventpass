@@ -1,0 +1,622 @@
+{
+  "name": "WF10 — EventPass Assistant",
+  "nodes": [
+    {
+      "id": "58895d53-6d99-4759-b8a9-f2d857f56acc",
+      "name": "Chat Trigger",
+      "webhookId": "70c09f6f-8bcc-4a66-af38-ed32c6e1f26a",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        320
+      ],
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {
+          "allowedOrigins": "*",
+          "responseMode": "lastNode",
+          "loadPreviousSession": "notSupported"
+        }
+      }
+    },
+    {
+      "id": "558b69a0-9e35-4af4-bb17-c7472db1e844",
+      "name": "Identificar conversación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst t = $('Chat Trigger').first().json;\nconst meta = t.metadata || {};\nconst conversation_id = String(t.sessionId || genId('CNV'));\nconst usuario_id = String(meta.usuario_id || '').slice(0, 40);\nconst visitor_id = String(meta.visitor_id || '').slice(0, 64) || ('anon-' + conversation_id.slice(0, 12));\nconst texto = String(t.chatInput || '').trim().slice(0, 2000);\nreturn [{ json: { conversation_id, usuario_id, visitor_id, texto, cerrar: texto.toLowerCase() === '/cerrar' } }];\n"
+      }
+    },
+    {
+      "id": "49da5be0-221c-486f-98b5-5a8abd52855b",
+      "name": "Leer Eventos (solo lectura)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Eventos"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "53273f35-9f88-4cca-9e9d-38168d2ddb6d",
+      "name": "Leer Inscripciones (solo lectura)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        720,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inscripciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "cf27cd04-461f-42fb-9595-07c10c4bded7",
+      "name": "Leer Conversaciones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        960,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Conversaciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "d7b61334-7cb7-4d8c-8a7f-cc174894e1ec",
+      "name": "Preparar contexto del catálogo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst id = $('Identificar conversación').first().json;\nconst confirmadas = {}, espera = {};\nfor (const i of filas('Leer Inscripciones (solo lectura)', 'inscripcion_id')) {\n  if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\n  if (i.estado === 'LISTA_ESPERA') espera[i.evento_id] = (espera[i.evento_id] || 0) + 1;\n}\nconst lineas = filas('Leer Eventos (solo lectura)', 'evento_id').filter((e) => e.estado !== 'BORRADOR').map((e) => {\n  const cupos = Math.max(Number(e.capacidad) - (confirmadas[e.evento_id] || 0), 0);\n  const pasado = fechaEvento(e) <= ahora;\n  return '- ' + e.nombre + ' | ' + e.categoria + ' | ' + String(e.fecha).slice(0, 10) + ' ' + e.hora + ' | ' + e.lugar + ' | estado ' + e.estado + (pasado ? ' (ya pasó)' : '') + ' | cupos libres ' + cupos + ' de ' + e.capacidad + ' | en lista de espera ' + (espera[e.evento_id] || 0) + ' | organiza ' + e.organizador;\n});\nconst contexto = 'Fecha y hora actual (Bogotá): ' + ahora.toLocaleString('es-CO', { timeZone: 'America/Bogota' }) + '\\n\\nCATÁLOGO:\\n' + (lineas.join('\\n') || '(no hay eventos publicados)');\nconst previa = filas('Leer Conversaciones', 'conversation_id').find((c) => c.conversation_id === id.conversation_id);\nconst conversacion = {\n  conversation_id: id.conversation_id,\n  usuario_id: id.usuario_id || (previa ? previa.usuario_id : ''),\n  visitor_id: id.visitor_id,\n  fecha_inicio: previa ? previa.fecha_inicio : ahora.toISOString(),\n  fecha_ultima_interaccion: ahora.toISOString(),\n  estado: id.cerrar ? 'CERRADA' : 'ABIERTA',\n};\nreturn [{ json: { ...conversacion, nueva: !previa, contexto } }];\n"
+      }
+    },
+    {
+      "id": "c4482ad4-295c-4a48-bbc9-2521368315bb",
+      "name": "Guardar conversación",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1440,
+        320
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Conversaciones"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "conversation_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "948ff1ac-2fe9-4f83-8712-7baf668f39d3",
+      "name": "Mensajes del usuario",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst c = $('Preparar contexto del catálogo').first().json;\nconst id = $('Identificar conversación').first().json;\nconst base = { conversation_id: c.conversation_id, usuario_id: c.usuario_id, visitor_id: c.visitor_id };\nconst salida = [];\nif (c.nueva) salida.push({ json: { message_id: genId('MSG'), ...base, rol: 'SYSTEM', mensaje: 'Conversación iniciada. Reglas: asistente informativo de solo lectura.', timestamp: ahora.toISOString() } });\nsalida.push({ json: { message_id: genId('MSG'), ...base, rol: 'USER', mensaje: id.texto, timestamp: new Date(ahora.getTime() + 1).toISOString() } });\nreturn salida;\n"
+      }
+    },
+    {
+      "id": "3c7004cd-ccca-4a3f-bfc3-a9236a99f897",
+      "name": "Guardar mensaje USER",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1920,
+        320
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Mensajes"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "456f7747-4436-450e-ac98-ad83fd3fc85d",
+      "name": "¿Cerrar conversación?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Sin texto no se llama a la IA (Gemini rechaza entradas vacías).\nconst id = $('Identificar conversación').first().json;\nreturn [{ json: { cerrar: id.cerrar || !id.texto } }];\n"
+      }
+    },
+    {
+      "id": "c6d33bce-2dfc-40dd-94f7-367190ad14f3",
+      "name": "¿Cerrar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "725de33c-d448-48bc-8b20-2dd62afefd9a",
+              "leftValue": "={{ $json.cerrar }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "3a6ae879-24fb-4aa9-9c63-4dcfc0bafba8",
+      "name": "EventPass Assistant (IA)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "executeOnce": true,
+      "onError": "continueRegularOutput",
+      "position": [
+        2640,
+        480
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Identificar conversación').first().json.texto }}",
+        "options": {
+          "systemMessage": "=Eres EventPass Assistant, el asistente de soporte de EventPass, una plataforma de eventos de tecnología y emprendimiento (meetups, hackatones, talleres, networking).\n\nRespondes en español, en tono cercano y directo, con respuestas cortas (máximo 6 líneas salvo que pidan un listado).\n\nPuedes informar sobre: eventos, categorías, fechas, lugares, cupos, lista de espera, estados de inscripción, vinculación con Telegram y cómo funciona EventPass.\n\nRestricciones estrictas (eres un asistente SOLO INFORMATIVO):\n- No puedes crear usuarios, iniciar sesión, inscribir, cancelar inscripciones, modificar eventos, cambiar cupos ni cambiar ningún estado. No tienes herramientas para hacerlo.\n- Si te piden una de esas acciones, explica en qué parte de la web se hace (Crear cuenta, Ingresar, botón Inscribirme en el evento, Mi cuenta) y no digas que lo hiciste.\n- No inventes eventos, fechas, lugares ni cupos: usa solo los datos del bloque CATÁLOGO. Si algo no aparece, dilo.\n- Nunca pidas ni repitas contraseñas, tokens o códigos de vinculación.\n\nCómo funciona EventPass:\n- Cualquiera puede ver el catálogo. Para inscribirse hay que crear cuenta, iniciar sesión y vincular Telegram desde Mi cuenta.\n- Vincular Telegram: en Mi cuenta se pide un código de 6 caracteres que dura 10 minutos y se envía al bot como \"/vincular CODIGO\". Cada código sirve una sola vez.\n- Si hay cupo la inscripción queda CONFIRMADA. Si el evento está lleno queda en LISTA_ESPERA.\n- Cuando alguien cancela, el cupo se reasigna automáticamente a quien lleva más tiempo en lista de espera, y se le avisa por Gmail y Telegram.\n- Estados de inscripción: CONFIRMADA, LISTA_ESPERA, CANCELADA. Estados de evento visibles: PUBLICADO (abierto), CERRADO (no recibe inscripciones), CANCELADO.\n- 24 horas antes del evento se envía un recordatorio por Gmail y Telegram a quienes tienen cupo confirmado.\n- Una persona solo puede tener una inscripción activa por evento.\n\n{{ $('Preparar contexto del catálogo').first().json.contexto }}"
+        }
+      }
+    },
+    {
+      "id": "13db9ab0-6d4d-4b4e-badd-34c0d9818fa5",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        800
+      ],
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {
+          "temperature": 0.3,
+          "maxOutputTokens": 800
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "n5EIh04zJmp7OSVp",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "id": "c006f396-d838-4f01-8ab9-f79e5f3e6a87",
+      "name": "Memoria de la conversación",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2880,
+        800
+      ],
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Identificar conversación').first().json.conversation_id }}",
+        "contextWindowLength": 10
+      }
+    },
+    {
+      "id": "6494ebb7-42ef-44c9-834d-6f0e2012a35e",
+      "name": "Mensaje ASSISTANT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst c = $('Preparar contexto del catálogo').first().json;\nconst id = $('Identificar conversación').first().json;\n// Si Gemini falla o está saturado, se responde un mensaje claro en vez de un error 500.\nconst texto = $('EventPass Assistant (IA)').isExecuted\n  ? String($('EventPass Assistant (IA)').first().json.output || 'El asistente no pudo responder en este momento. Intenta de nuevo en unos segundos.')\n  : !id.texto ? 'Escribe tu pregunta y te ayudo.' : 'Conversación cerrada. Si necesitas algo más, escribe de nuevo y abrimos una nueva.';\nreturn [{ json: { message_id: genId('MSG'), conversation_id: c.conversation_id, usuario_id: c.usuario_id, visitor_id: c.visitor_id, rol: 'ASSISTANT', mensaje: texto, timestamp: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "988751d7-79f6-45ef-890f-af197ab0c91d",
+      "name": "Guardar mensaje ASSISTANT",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        3360,
+        320
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Mensajes"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "cc6092b6-12a3-49b0-9384-48addccdac0d",
+      "name": "Respuesta al chat",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst m = $('Mensaje ASSISTANT').first().json;\nreturn [{ json: { output: m.mensaje, conversation_id: m.conversation_id } }];\n"
+      }
+    }
+  ],
+  "connections": {
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "Identificar conversación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identificar conversación": {
+      "main": [
+        [
+          {
+            "node": "Leer Eventos (solo lectura)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Eventos (solo lectura)": {
+      "main": [
+        [
+          {
+            "node": "Leer Inscripciones (solo lectura)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Inscripciones (solo lectura)": {
+      "main": [
+        [
+          {
+            "node": "Leer Conversaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Conversaciones": {
+      "main": [
+        [
+          {
+            "node": "Preparar contexto del catálogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar contexto del catálogo": {
+      "main": [
+        [
+          {
+            "node": "Guardar conversación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar conversación": {
+      "main": [
+        [
+          {
+            "node": "Mensajes del usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensajes del usuario": {
+      "main": [
+        [
+          {
+            "node": "Guardar mensaje USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar mensaje USER": {
+      "main": [
+        [
+          {
+            "node": "¿Cerrar conversación?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Cerrar conversación?": {
+      "main": [
+        [
+          {
+            "node": "¿Cerrar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Cerrar?": {
+      "main": [
+        [
+          {
+            "node": "Mensaje ASSISTANT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EventPass Assistant (IA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "EventPass Assistant (IA)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria de la conversación": {
+      "ai_memory": [
+        [
+          {
+            "node": "EventPass Assistant (IA)",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EventPass Assistant (IA)": {
+      "main": [
+        [
+          {
+            "node": "Mensaje ASSISTANT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje ASSISTANT": {
+      "main": [
+        [
+          {
+            "node": "Guardar mensaje ASSISTANT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar mensaje ASSISTANT": {
+      "main": [
+        [
+          {
+            "node": "Respuesta al chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "scPCC9ophfxcEttp",
+  "tags": []
+}

@@ -1,0 +1,1132 @@
+{
+  "name": "WF03 — Vinculación con Telegram",
+  "nodes": [
+    {
+      "id": "f9432828-70fd-471d-bd6b-ab369914ac3d",
+      "name": "Webhook Telegram",
+      "webhookId": "dd8c0a31-923b-4c4e-a5a9-788d7226c06f",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        160
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eventpass/telegram",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      }
+    },
+    {
+      "id": "d7abafe3-570e-4c3f-95cd-dcc67c3d4d4d",
+      "name": "Leer Usuarios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        240,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Usuarios"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "269a33c8-57bd-41d3-827f-42112959f7bb",
+      "name": "Leer Sesiones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sesiones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "c1ff207b-f66c-4343-a003-73eb4d719368",
+      "name": "Leer Códigos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        720,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Codigos_Vinculacion"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "839304c4-7a7d-4233-9f7d-40072d39636b",
+      "name": "Leer Vinculaciones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        960,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Vinculaciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "e568244c-ea3d-446c-8487-10c556eb358f",
+      "name": "Validar solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst b = $('Webhook Telegram').first().json.body || {};\nconst accion = String(b.accion || '').trim().toLowerCase();\nif (!['solicitar_codigo', 'estado'].includes(accion)) return fallo(400, 'ACCION_INVALIDA', 'La acción debe ser solicitar_codigo o estado.');\nconst v = validarSesion(b.session_token, filas('Leer Sesiones', 'session_id'), filas('Leer Usuarios', 'usuario_id'));\nif (!v.ok) return fallo(401, v.codigo, v.mensaje);\nconst vinculacion = filas('Leer Vinculaciones', 'vinculacion_id').find((x) => x.usuario_id === v.usuario.usuario_id && x.estado === 'ACTIVA') || null;\nreturn [{ json: { ruta: accion, usuario_id: v.usuario.usuario_id, vinculacion } }];\n"
+      }
+    },
+    {
+      "id": "bbf60fab-9543-449c-96a1-a70752db64a0",
+      "name": "Según acción",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1440,
+        160
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ca8c0933-731f-4e34-94ec-2e531fe15e3c",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "solicitar_codigo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "solicitar_codigo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "137db3be-f395-4e3c-b172-442443c42192",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "estado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "estado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fb43fdaf-7114-4812-9e18-9d21c6fa5ace",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "error",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "error"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "88ff2d30-9782-4941-9dad-b1bd5d758b3c",
+      "name": "Generar código temporal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst crypto = require('crypto');\nconst v = $('Validar solicitud').first().json;\nif (v.vinculacion) return fallo(409, 'YA_VINCULADO', 'Tu cuenta ya tiene Telegram vinculado.');\nconst ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';\nlet codigo = '';\nfor (let i = 0; i < 6; i++) codigo += ALFABETO[crypto.randomInt(ALFABETO.length)];\nconst MINUTOS = 10;\nconst fila = { codigo_id: genId('COD'), usuario_id: v.usuario_id, codigo, creado_en: ahora.toISOString(), expira_en: new Date(ahora.getTime() + MINUTOS * 60000).toISOString(), estado: 'PENDIENTE', usado_en: '' };\nreturn [{ json: { ...fila, generar: true, _status: 201, _body: { ok: true, mensaje: 'Código generado. Envíalo al bot antes de ' + MINUTOS + ' minutos.', data: { codigo, expira_en: fila.expira_en, comando: '/vincular ' + codigo } } } }];\n"
+      }
+    },
+    {
+      "id": "329433ed-df93-4a3e-85b2-bff9d3df6344",
+      "name": "¿Código generado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8238d9c7-7bf3-4b5c-a17f-1063c5354d4e",
+              "leftValue": "={{ $json.generar }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a5152fc5-1edb-4e1e-b498-2d9ffb8c7896",
+      "name": "Guardar código",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        2160,
+        0
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Codigos_Vinculacion"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "b76d4da1-bbca-48c0-aa26-c96d0a1f9a6d",
+      "name": "Consultar vinculación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar solicitud').first().json;\nconst x = v.vinculacion;\nreturn ok(200, x ? { vinculado: true, telegram_username: x.telegram_username, fecha_vinculacion: x.fecha_vinculacion } : { vinculado: false }, x ? 'Telegram vinculado.' : 'Telegram aún no está vinculado.');\n"
+      }
+    },
+    {
+      "id": "95314986-39cb-49c2-a8be-88dc1a73f5eb",
+      "name": "Armar respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst candidatos = [\"Generar código temporal\",\"Consultar vinculación\",\"Validar solicitud\"];\nlet fuente = null;\nfor (const n of candidatos) {\n  if ($(n).isExecuted && $(n).first().json._body) { fuente = $(n).first().json; break; }\n}\nif (!fuente) fuente = { _status: 500, _body: { ok: false, error: { codigo: 'SIN_RESPUESTA', mensaje: 'La solicitud no produjo respuesta. Revisa la ejecución en n8n.' } } };\nreturn [{ json: { _status: fuente._status || 200, _body: fuente._body, _auditoria: fuente._auditoria || null, _notificacion: fuente._notificacion || null } }];\n"
+      }
+    },
+    {
+      "id": "9c991b99-c3e9-408c-8c62-2fc3fae90008",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2640,
+        160
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json._body) }}",
+        "options": {
+          "responseCode": "={{ $json._status }}"
+        }
+      }
+    },
+    {
+      "id": "87586ca6-e7d7-4de1-bb9d-4d2b5f6d5c1e",
+      "name": "Códigos pendientes anteriores",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Un usuario solo puede tener un código PENDIENTE: los anteriores pasan a CANCELADO.\nif (!$('Guardar código').isExecuted) return [];\nconst nuevo = $('Generar código temporal').first().json;\nreturn filas('Leer Códigos', 'codigo_id')\n  .filter((c) => c.usuario_id === nuevo.usuario_id && c.estado === 'PENDIENTE' && c.codigo_id !== nuevo.codigo_id)\n  .map((c) => ({ json: { codigo_id: c.codigo_id, estado: 'CANCELADO' } }));\n"
+      }
+    },
+    {
+      "id": "76527e84-b49a-4b65-8a3e-e9b84a0e9c47",
+      "name": "Cancelar códigos anteriores",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        3120,
+        160
+      ],
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Codigos_Vinculacion"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "codigo_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "9ac22db1-b99a-437f-a90a-ce21c653c58b",
+      "name": "Telegram Trigger",
+      "webhookId": "ab24fdff-5e73-4b0d-ab4a-c94495aa7750",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        800
+      ],
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "CtSsaDhTWZTLXNv4",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "id": "26f2180f-7e3d-4e63-a960-193052c685b5",
+      "name": "Leer Códigos (bot)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        240,
+        800
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Codigos_Vinculacion"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "3ee3d392-d818-40fa-8838-84f5cf079dd1",
+      "name": "Leer Vinculaciones (bot)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        800
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Vinculaciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "359cc1a7-b432-438f-a28c-67936e01bdce",
+      "name": "Extraer y validar código",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        800
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst m = $('Telegram Trigger').first().json.message || {};\nconst chat_id = String(m.chat?.id || '');\nconst username = m.from?.username ? '@' + m.from.username : (m.from?.first_name || '');\nconst texto = String(m.text || '').trim();\nconst salida = (respuesta, extra = {}) => [{ json: { ruta: 'responder', chat_id, respuesta, ...extra } }];\n\nconst match = texto.match(/^\\/vincular(?:@\\w+)?\\s+([A-Za-z0-9]{4,12})$/i);\nif (!match) {\n  return salida('Hola. Soy el bot de EventPass.\\n\\nPara recibir avisos de tus eventos aquí, abre Mi cuenta en la web, pide un código de vinculación y envíamelo así:\\n/vincular TUCODIGO');\n}\nconst codigo = match[1].toUpperCase();\nconst c = filas('Leer Códigos (bot)', 'codigo_id').find((x) => String(x.codigo).toUpperCase() === codigo);\nif (!c) return salida('Ese código no existe. Revisa que esté bien escrito o pide uno nuevo en Mi cuenta.');\nif (c.estado === 'USADO') return salida('Ese código ya fue usado. Cada código sirve una sola vez; pide uno nuevo en Mi cuenta si lo necesitas.');\nif (c.estado === 'CANCELADO') return salida('Ese código fue reemplazado por uno más reciente. Usa el último código que generaste.');\nif (c.estado === 'EXPIRADO' || new Date(c.expira_en) <= ahora) {\n  return [{ json: { ruta: 'cambiar_codigo', chat_id, vincular: false, respuesta: 'Ese código expiró. Pide uno nuevo en Mi cuenta; dura 10 minutos.', cambio: { codigo_id: c.codigo_id, estado: 'EXPIRADO' } } }];\n}\nconst otra = filas('Leer Vinculaciones (bot)', 'vinculacion_id').find((x) => String(x.chat_id) === chat_id && x.estado === 'ACTIVA' && x.usuario_id !== c.usuario_id);\nif (otra) return salida('Este chat de Telegram ya está vinculado a otra cuenta de EventPass.');\nreturn [{ json: { ruta: 'cambiar_codigo', chat_id, vincular: true,\n  respuesta: 'Listo. Tu cuenta de EventPass quedó vinculada. Desde ahora recibirás aquí las confirmaciones, cambios de cupo y recordatorios de tus eventos.',\n  cambio: { codigo_id: c.codigo_id, estado: 'USADO', usado_en: ahora.toISOString() },\n  vinculacion: { vinculacion_id: genId('VIN'), usuario_id: c.usuario_id, chat_id, telegram_username: username, fecha_vinculacion: ahora.toISOString(), estado: 'ACTIVA' } } }];\n"
+      }
+    },
+    {
+      "id": "5a76f501-3027-4d55-a68a-0a22ff0e23a3",
+      "name": "Resultado de validación",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        800
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "941bb50c-180d-44de-abd0-1281a82ee6d5",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "cambiar_codigo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cambiar_codigo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "840acc62-14ab-48c3-9974-41e203bfcd79",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "responder",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "responder"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d0b4baa7-0841-4d60-9e25-49e1390516ab",
+      "name": "Cambio de estado del código",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        640
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nreturn [{ json: $('Extraer y validar código').first().json.cambio }];\n"
+      }
+    },
+    {
+      "id": "b3510e6b-afa4-40de-b090-240999a92b00",
+      "name": "Actualizar estado del código",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1440,
+        640
+      ],
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Codigos_Vinculacion"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "codigo_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "389f7e0c-676d-4936-ac6f-ecde4f65c0ab",
+      "name": "¿Crear vinculación?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        640
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst r = $('Extraer y validar código').first().json;\nreturn [{ json: { vincular: r.vincular === true } }];\n"
+      }
+    },
+    {
+      "id": "ffdbe143-14b4-4e5d-bfd3-7e2f926c6b63",
+      "name": "¿Vincular?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        640
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a80a2cba-b7d7-4420-90df-9bdbc42a7b59",
+              "leftValue": "={{ $json.vincular }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "d5acdb51-3d61-4f58-b595-12df79cb140c",
+      "name": "Fila de vinculación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        480
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nreturn [{ json: $('Extraer y validar código').first().json.vinculacion }];\n"
+      }
+    },
+    {
+      "id": "671b2cfe-6193-488a-86b1-c9705f586fd7",
+      "name": "Guardar vinculación",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        2400,
+        480
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Vinculaciones"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "76e6d63a-45bd-4c7d-903b-16ffea216b5a",
+      "name": "Responder en Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "executeOnce": true,
+      "position": [
+        2640,
+        800
+      ],
+      "parameters": {
+        "chatId": "={{ $('Extraer y validar código').first().json.chat_id }}",
+        "text": "={{ $('Extraer y validar código').first().json.respuesta }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "CtSsaDhTWZTLXNv4",
+          "name": "Telegram account"
+        }
+      },
+      "webhookId": "b83b4171-53e7-4b60-a308-f1729e2c745c"
+    }
+  ],
+  "connections": {
+    "Webhook Telegram": {
+      "main": [
+        [
+          {
+            "node": "Leer Usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Usuarios": {
+      "main": [
+        [
+          {
+            "node": "Leer Sesiones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Sesiones": {
+      "main": [
+        [
+          {
+            "node": "Leer Códigos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Códigos": {
+      "main": [
+        [
+          {
+            "node": "Leer Vinculaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Vinculaciones": {
+      "main": [
+        [
+          {
+            "node": "Validar solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar solicitud": {
+      "main": [
+        [
+          {
+            "node": "Según acción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Según acción": {
+      "main": [
+        [
+          {
+            "node": "Generar código temporal",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consultar vinculación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar código temporal": {
+      "main": [
+        [
+          {
+            "node": "¿Código generado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Código generado?": {
+      "main": [
+        [
+          {
+            "node": "Guardar código",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar código": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar vinculación": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar respuesta": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder": {
+      "main": [
+        [
+          {
+            "node": "Códigos pendientes anteriores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Códigos pendientes anteriores": {
+      "main": [
+        [
+          {
+            "node": "Cancelar códigos anteriores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Leer Códigos (bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Códigos (bot)": {
+      "main": [
+        [
+          {
+            "node": "Leer Vinculaciones (bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Vinculaciones (bot)": {
+      "main": [
+        [
+          {
+            "node": "Extraer y validar código",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer y validar código": {
+      "main": [
+        [
+          {
+            "node": "Resultado de validación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado de validación": {
+      "main": [
+        [
+          {
+            "node": "Cambio de estado del código",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder en Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cambio de estado del código": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado del código",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar estado del código": {
+      "main": [
+        [
+          {
+            "node": "¿Crear vinculación?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Crear vinculación?": {
+      "main": [
+        [
+          {
+            "node": "¿Vincular?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Vincular?": {
+      "main": [
+        [
+          {
+            "node": "Fila de vinculación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder en Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fila de vinculación": {
+      "main": [
+        [
+          {
+            "node": "Guardar vinculación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar vinculación": {
+      "main": [
+        [
+          {
+            "node": "Responder en Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "HftFhKn6lCawTubj",
+  "tags": []
+}

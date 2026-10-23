@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.vercel/
+
+# Configuración local de despliegue a n8n (IDs y rutas de esta máquina)
+scripts/n8n/config.local.json
+scripts/n8n/build/
+
+# MemPalace local
+mempalace.yaml

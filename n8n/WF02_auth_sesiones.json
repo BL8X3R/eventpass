@@ -1,0 +1,602 @@
+{
+  "name": "WF02 — Autenticación y sesiones",
+  "nodes": [
+    {
+      "id": "37ce41f4-5348-4174-a25d-8e8499b91d62",
+      "name": "Webhook Auth",
+      "webhookId": "d4452e85-d291-450c-a17f-b46f97132b2b",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        160
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eventpass/auth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      }
+    },
+    {
+      "id": "8f1f5a53-c57e-46f3-ad45-da0a9c37518f",
+      "name": "Leer Usuarios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        240,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Usuarios"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "0d42ebd8-7e0a-4696-8205-a4c274d96da2",
+      "name": "Leer Sesiones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sesiones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "8d9ec0ed-8112-4595-accf-ed209c98dfee",
+      "name": "Validar solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst b = $('Webhook Auth').first().json.body || {};\nconst accion = String(b.accion || '').trim().toLowerCase();\nif (accion === 'login') {\n  if (!b.email || !b.password) return fallo(400, 'DATOS_INVALIDOS', 'Escribe tu email y tu contraseña.');\n  return [{ json: { ruta: 'login', email: String(b.email).trim().toLowerCase(), password: String(b.password) } }];\n}\nif (accion === 'logout' || accion === 'validar') {\n  if (!b.session_token) return fallo(400, 'SESION_REQUERIDA', 'Falta el token de sesión.');\n  return [{ json: { ruta: 'sesion', accion, session_token: String(b.session_token) } }];\n}\nreturn fallo(400, 'ACCION_INVALIDA', 'La acción debe ser login, logout o validar.');\n"
+      }
+    },
+    {
+      "id": "8441e505-bc48-4a62-aa5b-d9af871a0e32",
+      "name": "Según acción",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        160
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6ee6890e-2823-43b7-a2b4-90b420fce1ea",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "login",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "login"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "597da7d9-bd4b-45ca-a41a-cf2c7773875d",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "sesion",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "sesion"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d32a0b08-0f3a-412c-876f-c6934952304c",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "error",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "error"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "cb7b26a1-057f-4e8a-b2a6-8563e4a574f4",
+      "name": "Verificar password (hash + salt)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst crypto = require('crypto');\nconst v = $('Validar solicitud').first().json;\nconst u = filas('Leer Usuarios', 'usuario_id').find((x) => String(x.email_normalizado).trim().toLowerCase() === v.email);\nconst invalidas = () => fallo(401, 'CREDENCIALES_INVALIDAS', 'El email o la contraseña no coinciden.', { valido: false });\nif (!u) return invalidas();\nconst calculado = crypto.pbkdf2Sync(v.password, String(u.password_salt), 100000, 32, 'sha256').toString('hex');\nconst guardado = String(u.password_hash);\nif (calculado.length !== guardado.length || !crypto.timingSafeEqual(Buffer.from(calculado), Buffer.from(guardado))) return invalidas();\nif (u.estado !== 'ACTIVO') return fallo(403, 'USUARIO_INACTIVO', 'Esta cuenta está desactivada.', { valido: false });\nreturn [{ json: { valido: true, usuario: sinFila(u) } }];\n"
+      }
+    },
+    {
+      "id": "6fcf6c88-bd84-42b9-a5f1-96cca71b2715",
+      "name": "¿Credenciales válidas?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c14d1084-e6d1-46e5-b1a5-862a88c492d3",
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e5e1f547-d69e-4b73-9c7f-2e5ff72f7d97",
+      "name": "Generar token de sesión",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst crypto = require('crypto');\nconst u = $('Verificar password (hash + salt)').first().json.usuario;\nconst HORAS = 8;\nconst fila = {\n  session_id: genId('SES'),\n  usuario_id: u.usuario_id,\n  session_token: crypto.randomBytes(32).toString('hex'),\n  creada_en: ahora.toISOString(),\n  expira_en: new Date(ahora.getTime() + HORAS * 3600 * 1000).toISOString(),\n  estado: 'ACTIVA',\n  cerrada_en: '',\n  ultima_validacion: ahora.toISOString(),\n};\nreturn [{ json: { ...fila, _status: 200, _body: { ok: true, mensaje: 'Sesión iniciada.', data: { session_token: fila.session_token, expira_en: fila.expira_en, usuario: { usuario_id: u.usuario_id, nombre: u.nombre, email: u.email_normalizado } } } } }];\n"
+      }
+    },
+    {
+      "id": "98adad22-3f4f-44cd-8a67-57531f4a6898",
+      "name": "Registrar sesión",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1920,
+        0
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sesiones"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "be1493f7-54b6-49e0-9569-aa1a3177d1d8",
+      "name": "Validar sesión y expiración",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar solicitud').first().json;\nconst s = filas('Leer Sesiones', 'session_id').find((x) => x.session_token === v.session_token);\nif (!s) return fallo(401, 'SESION_INVALIDA', 'Tu sesión no es válida. Inicia sesión de nuevo.', { actualizar: false });\nconst base = { session_id: s.session_id, ultima_validacion: ahora.toISOString() };\nif (s.estado !== 'ACTIVA') {\n  if (v.accion === 'logout') return ok(200, { estado: s.estado }, 'La sesión ya estaba cerrada.', { actualizar: false });\n  return fallo(401, 'SESION_' + s.estado, 'Tu sesión terminó. Inicia sesión de nuevo.', { actualizar: false });\n}\nif (new Date(s.expira_en) <= ahora) {\n  return fallo(401, 'SESION_EXPIRADA', 'Tu sesión expiró. Inicia sesión de nuevo.', { ...base, estado: 'EXPIRADA', actualizar: true });\n}\nconst u = filas('Leer Usuarios', 'usuario_id').find((x) => x.usuario_id === s.usuario_id);\nif (!u || u.estado !== 'ACTIVO') {\n  return fallo(401, 'USUARIO_INACTIVO', 'Esta cuenta está desactivada.', { ...base, estado: 'CERRADA', cerrada_en: ahora.toISOString(), actualizar: true });\n}\nif (v.accion === 'logout') {\n  return ok(200, { estado: 'CERRADA' }, 'Sesión cerrada.', { ...base, estado: 'CERRADA', cerrada_en: ahora.toISOString(), actualizar: true });\n}\nreturn ok(200, { valida: true, expira_en: s.expira_en, usuario: { usuario_id: u.usuario_id, nombre: u.nombre, email: u.email_normalizado } }, 'Sesión válida.', { ...base, actualizar: true });\n"
+      }
+    },
+    {
+      "id": "30cb46e6-bffa-4f99-bed4-a500916aba79",
+      "name": "¿Actualizar sesión?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d8c0e0a4-2498-4f43-b403-61747aa6b434",
+              "leftValue": "={{ $json.actualizar }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "020fda4c-1bdf-47bc-a78f-e1362d9e8381",
+      "name": "Actualizar estado de sesión",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1680,
+        320
+      ],
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Sesiones"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "session_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "98b6ddfb-8ce9-484f-8c94-f38f444f338a",
+      "name": "Armar respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst candidatos = [\"Generar token de sesión\",\"Verificar password (hash + salt)\",\"Validar sesión y expiración\",\"Validar solicitud\"];\nlet fuente = null;\nfor (const n of candidatos) {\n  if ($(n).isExecuted && $(n).first().json._body) { fuente = $(n).first().json; break; }\n}\nif (!fuente) fuente = { _status: 500, _body: { ok: false, error: { codigo: 'SIN_RESPUESTA', mensaje: 'La solicitud no produjo respuesta. Revisa la ejecución en n8n.' } } };\nreturn [{ json: { _status: fuente._status || 200, _body: fuente._body, _auditoria: fuente._auditoria || null, _notificacion: fuente._notificacion || null } }];\n"
+      }
+    },
+    {
+      "id": "7bada245-8682-45b3-8789-73eb2103c8f7",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        160
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json._body) }}",
+        "options": {
+          "responseCode": "={{ $json._status }}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Auth": {
+      "main": [
+        [
+          {
+            "node": "Leer Usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Usuarios": {
+      "main": [
+        [
+          {
+            "node": "Leer Sesiones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Sesiones": {
+      "main": [
+        [
+          {
+            "node": "Validar solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar solicitud": {
+      "main": [
+        [
+          {
+            "node": "Según acción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Según acción": {
+      "main": [
+        [
+          {
+            "node": "Verificar password (hash + salt)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validar sesión y expiración",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar password (hash + salt)": {
+      "main": [
+        [
+          {
+            "node": "¿Credenciales válidas?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Credenciales válidas?": {
+      "main": [
+        [
+          {
+            "node": "Generar token de sesión",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar token de sesión": {
+      "main": [
+        [
+          {
+            "node": "Registrar sesión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar sesión": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar sesión y expiración": {
+      "main": [
+        [
+          {
+            "node": "¿Actualizar sesión?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Actualizar sesión?": {
+      "main": [
+        [
+          {
+            "node": "Actualizar estado de sesión",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar estado de sesión": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar respuesta": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "qc1FBF99QwC0Y8WZ",
+  "tags": []
+}

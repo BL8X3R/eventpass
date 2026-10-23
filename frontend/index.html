@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EventPass — eventos tech y de emprendimiento</title>
+  <meta name="description" content="Encuentra meetups, hackatones, talleres y noches de networking, inscríbete y recibe avisos por Gmail y Telegram.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="config.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="oculto" href="#app">Saltar al contenido</a>
+  <header class="cabecera">
+    <div class="contenedor">
+      <a class="marca" href="#/"><span class="marca-ojal" aria-hidden="true"></span>EventPass</a>
+      <nav class="nav" id="nav" aria-label="Principal"></nav>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>EventPass · Proyecto integrador. Los eventos y la lógica viven en n8n; esta página solo los consulta.</p>
+    </div>
+  </footer>
+
+  <button class="boton chat-abrir" id="chat-abrir" type="button" aria-controls="chat-panel" aria-expanded="false">Preguntar al asistente</button>
+  <section class="chat-panel" id="chat-panel" hidden aria-label="Asistente de EventPass">
+    <div class="chat-cabeza">
+      <div><strong>EventPass Assistant</strong><small>Responde dudas; no hace inscripciones.</small></div>
+      <div>
+        <button type="button" id="chat-nueva">Nueva</button>
+        <button type="button" id="chat-cerrar" aria-label="Cerrar asistente">Cerrar</button>
+      </div>
+    </div>
+    <div class="chat-mensajes" id="chat-mensajes" aria-live="polite"></div>
+    <form class="chat-form" id="chat-form">
+      <label class="oculto" for="chat-texto">Escribe tu pregunta</label>
+      <input id="chat-texto" name="texto" autocomplete="off" maxlength="500" placeholder="¿Qué eventos hay esta semana?" required>
+      <button class="boton" type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

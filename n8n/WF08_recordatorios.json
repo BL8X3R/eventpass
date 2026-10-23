@@ -1,0 +1,476 @@
+{
+  "name": "WF08 — Recordatorios automáticos",
+  "nodes": [
+    {
+      "id": "4d939de5-d672-4d02-8a82-daef1180c6af",
+      "name": "Cada 30 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        160
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "37cfb020-bd32-4014-872d-2a7dc9544191",
+      "name": "Leer Eventos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        240,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Eventos"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "1bc06999-15e0-4bbb-9712-b40e43a78e44",
+      "name": "Eventos PUBLICADOS",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "alwaysOutputData": true,
+      "position": [
+        480,
+        160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "41350cb0-4fd1-41e4-8f1a-aa2c78c7a6cc",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "PUBLICADO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "af66b811-33e2-4960-9ef4-85217e0764a7",
+      "name": "Leer Inscripciones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        720,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inscripciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "bbd25719-90c6-4ebf-8bbb-4360ba0347f2",
+      "name": "Inscripciones CONFIRMADAS",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "alwaysOutputData": true,
+      "position": [
+        960,
+        160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2585ca00-1ffe-4e58-8e0a-90bc5e9aedb0",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "CONFIRMADA",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "592b2e09-8eda-4813-8198-6f01d35af080",
+      "name": "Leer Recordatorios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1200,
+        160
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1nPATKkTPoCgGg_OKXkpL2zMocqhYHXCj5KsL2RKo4n8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Recordatorios"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "e0a259bc-9f0d-406e-9f73-d40ecf50df8e",
+      "name": "Detectar eventos próximos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Un recordatorio RECORDATORIO_24H por inscripción confirmada cuando faltan 24 horas o menos.\nconst VENTANA_HORAS = 24;\nconst TIPO = 'RECORDATORIO_24H';\nconst enviados = new Set(filas('Leer Recordatorios', 'recordatorio_id').filter((r) => ['ENVIADO', 'OMITIDO'].includes(r.estado)).map((r) => r.clave_idempotencia));\nconst eventos = Object.fromEntries(filas('Eventos PUBLICADOS', 'evento_id').map((e) => [e.evento_id, e]));\nconst salida = [];\nfor (const i of filas('Inscripciones CONFIRMADAS', 'inscripcion_id')) {\n  const e = eventos[i.evento_id];\n  if (!e) continue;\n  const inicio = fechaEvento(e);\n  const faltanMs = inicio - ahora;\n  if (faltanMs <= 0 || faltanMs > VENTANA_HORAS * 3600 * 1000) continue;\n  const clave = i.usuario_id + '|' + e.evento_id + '|' + TIPO;\n  salida.push({ json: { clave, duplicado: enviados.has(clave), tipo: TIPO, usuario_id: i.usuario_id, evento_id: e.evento_id, inscripcion_id: i.inscripcion_id,\n    fecha_programada: new Date(inicio.getTime() - VENTANA_HORAS * 3600 * 1000).toISOString(), evento: { nombre: e.nombre, fecha: String(e.fecha).slice(0, 10), hora: e.hora, lugar: e.lugar } } });\n}\nreturn salida;\n"
+      }
+    },
+    {
+      "id": "575b2d0f-f6fc-4f1e-9a80-091ecd9bf2f5",
+      "name": "Sin recordatorio previo",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0a229555-d143-4b01-8f20-aadc49d36aac",
+              "leftValue": "={{ $json.duplicado }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "8a407812-edd9-497e-9c33-68b7deb19bea",
+      "name": "Preparar notificación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nreturn $input.all().map(({ json: r }) => ({ json: {\n  usuario_id: r.usuario_id, tipo: r.tipo, evento_id: r.evento_id, inscripcion_id: r.inscripcion_id,\n  titulo: 'Mañana es ' + r.evento.nombre,\n  mensaje: 'Te recordamos que ' + r.evento.nombre + ' es el ' + r.evento.fecha + ' a las ' + r.evento.hora + ' en ' + r.evento.lugar + '. Tu cupo está confirmado. Si ya no puedes asistir, cancela desde Mi cuenta para liberar el cupo.',\n  clave_idempotencia: r.clave,\n} }));\n"
+      }
+    },
+    {
+      "id": "50d03528-0b3d-4556-93bb-e3f49fa122a9",
+      "name": "Notificar (WF09)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "alwaysOutputData": true,
+      "position": [
+        2160,
+        160
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "NRT3LHofBWlOl8Sq"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "24d1b114-32ac-4e13-927f-6378ce99615b",
+      "name": "Fila de recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst pendientes = $('Sin recordatorio previo').all();\nconst resultados = $input.all();\nreturn pendientes.map(({ json: r }, idx) => {\n  const n = resultados[idx]?.json || {};\n  const estado = n.resultado === 'OMITIDO' ? 'OMITIDO' : (n.gmail_estado === 'ENVIADO' || n.telegram_estado === 'ENVIADO') ? 'ENVIADO' : 'ERROR';\n  return { json: { recordatorio_id: genId('REC'), usuario_id: r.usuario_id, evento_id: r.evento_id, inscripcion_id: r.inscripcion_id, tipo_recordatorio: r.tipo,\n    fecha_programada: r.fecha_programada, fecha_envio: estado === 'ENVIADO' ? ahora.toISOString() : '', estado, clave_idempotencia: r.clave } };\n});\n"
+      }
+    },
+    {
+      "id": "aa877b6f-d0c1-4892-a442-a54fb165a42f",
+      "name": "Registrar recordatorio",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        2640,
+        160
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1nPATKkTPoCgGg_OKXkpL2zMocqhYHXCj5KsL2RKo4n8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Recordatorios"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cada 30 minutos": {
+      "main": [
+        [
+          {
+            "node": "Leer Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Eventos": {
+      "main": [
+        [
+          {
+            "node": "Eventos PUBLICADOS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eventos PUBLICADOS": {
+      "main": [
+        [
+          {
+            "node": "Leer Inscripciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Inscripciones": {
+      "main": [
+        [
+          {
+            "node": "Inscripciones CONFIRMADAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inscripciones CONFIRMADAS": {
+      "main": [
+        [
+          {
+            "node": "Leer Recordatorios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Recordatorios": {
+      "main": [
+        [
+          {
+            "node": "Detectar eventos próximos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detectar eventos próximos": {
+      "main": [
+        [
+          {
+            "node": "Sin recordatorio previo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sin recordatorio previo": {
+      "main": [
+        [
+          {
+            "node": "Preparar notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar notificación": {
+      "main": [
+        [
+          {
+            "node": "Notificar (WF09)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar (WF09)": {
+      "main": [
+        [
+          {
+            "node": "Fila de recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fila de recordatorio": {
+      "main": [
+        [
+          {
+            "node": "Registrar recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "NHgsHhxEkdNFEmog",
+  "tags": []
+}

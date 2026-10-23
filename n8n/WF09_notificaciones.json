@@ -1,0 +1,567 @@
+{
+  "name": "WF09 — Servicio central de notificaciones",
+  "nodes": [
+    {
+      "id": "f56f216d-44cb-4b33-aa68-5dd58319588e",
+      "name": "Recibir notificación",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        320
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "479a712a-7396-4acc-9c6c-5ef7a9c3e7a7",
+      "name": "Validar entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst n = $('Recibir notificación').first().json;\nconst faltan = ['usuario_id', 'tipo', 'titulo', 'mensaje'].filter((k) => !n[k]);\nconst clave = String(n.clave_idempotencia || [n.tipo, n.usuario_id, n.evento_id || '', n.inscripcion_id || ''].join('|'));\nreturn [{ json: { valida: !faltan.length, faltan, usuario_id: String(n.usuario_id || ''), tipo: String(n.tipo || ''), titulo: String(n.titulo || ''), mensaje: String(n.mensaje || ''), evento_id: String(n.evento_id || ''), inscripcion_id: String(n.inscripcion_id || ''), clave_idempotencia: clave } }];\n"
+      }
+    },
+    {
+      "id": "043a0bed-dc31-4b54-ae5e-4c1757533ee9",
+      "name": "Consultar usuario",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Usuarios"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "63e7d0b3-8db8-4807-ac5a-d1547730e73e",
+      "name": "Consultar chat_id",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        720,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Vinculaciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "7140f652-a5b7-4a3c-a61f-1e80505c74a3",
+      "name": "Leer notificaciones previas",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        960,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "11alXQhdWMBNz1mDs1gFXE58G8b1UIC-pA7STLM3icqY"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Notificaciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "75d8c9b1-17af-47c2-a9cd-e23e7446def4",
+      "name": "Preparar destinatarios",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst n = $('Validar entrada').first().json;\nconst u = filas('Consultar usuario', 'usuario_id').find((x) => x.usuario_id === n.usuario_id);\nconst vin = filas('Consultar chat_id', 'vinculacion_id').find((x) => x.usuario_id === n.usuario_id && x.estado === 'ACTIVA');\nconst previa = filas('Leer notificaciones previas', 'notificacion_id').find((x) => x.clave_idempotencia === n.clave_idempotencia && (x.gmail_estado === 'ENVIADO' || x.telegram_estado === 'ENVIADO'));\nconst omitir = !n.valida || !u || !!previa;\nconst motivo = !n.valida ? 'Faltan campos: ' + n.faltan.join(', ') : !u ? 'Usuario no encontrado' : previa ? 'Ya enviada (' + previa.notificacion_id + ')' : '';\nreturn [{ json: { ...n, omitir, motivo, email: u ? u.email_normalizado : '', nombre: u ? u.nombre : '', chat_id: vin ? String(vin.chat_id) : '' } }];\n"
+      }
+    },
+    {
+      "id": "193071f5-0024-4988-b107-2296dc6518b6",
+      "name": "¿Omitir?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0a86123d-a469-4a84-b455-b262bdd5b7c7",
+              "leftValue": "={{ $json.omitir }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1e16faf8-5367-44bc-a536-7b920b8976db",
+      "name": "Enviar Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput",
+      "position": [
+        1680,
+        480
+      ],
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.titulo }}",
+        "emailType": "html",
+        "message": "={{ '<div style=\"font-family:Arial,sans-serif;max-width:560px;margin:auto;border:2px solid #1E2230;border-radius:14px;overflow:hidden\">'\n + '<div style=\"background:#3046C9;color:#fff;padding:16px 20px;font-size:20px;font-weight:bold\">EventPass</div>'\n + '<div style=\"padding:20px;color:#1E2230;font-size:15px;line-height:1.5\"><p>Hola ' + $json.nombre + ',</p><p>' + $json.mensaje + '</p>'\n + '<p style=\"color:#5B6170;font-size:13px\">Recibes este correo porque tienes una cuenta en EventPass. Tipo de aviso: ' + $json.tipo + '.</p></div></div>' }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NNzcDFpYYW5mNKL9",
+          "name": "Gmail account"
+        }
+      },
+      "webhookId": "562e9003-e100-4706-8377-5fb09598e6e5"
+    },
+    {
+      "id": "99fecaea-7b2e-4351-b086-7f5f198b96b3",
+      "name": "Resultado Gmail",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        480
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst r = $input.first().json;\nconst d = $('Preparar destinatarios').first().json;\nconst enviado = !r.error && !!(r.id || r.threadId || r.labelIds);\nreturn [{ json: { ...d, tiene_telegram: !!d.chat_id, gmail_estado: !d.email ? 'NO_APLICA' : enviado ? 'ENVIADO' : 'ERROR', gmail_error: enviado || !d.email ? '' : String(r.error?.message || r.error || 'Error desconocido').slice(0, 300) } }];\n"
+      }
+    },
+    {
+      "id": "8f60d656-56d6-487e-bb8a-7617cd1c5e3c",
+      "name": "¿Tiene Telegram?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        480
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "568454eb-9bad-4a3c-87f2-b9bd81ef574a",
+              "leftValue": "={{ $json.tiene_telegram }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "9d32023f-a6ff-4fd0-8272-d6506b15add0",
+      "name": "Enviar Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput",
+      "position": [
+        2400,
+        320
+      ],
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ '🎟 ' + $json.titulo + '\\n\\n' + $json.mensaje }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "CtSsaDhTWZTLXNv4",
+          "name": "Telegram account"
+        }
+      },
+      "webhookId": "9f93564f-dc12-498b-82ca-3f5af8ae8d48"
+    },
+    {
+      "id": "891950d2-4960-4bed-bd24-a64842f39c38",
+      "name": "Resultado Telegram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst r = $input.first().json;\nconst d = $('Resultado Gmail').first().json;\nconst enviado = !r.error && !!(r.message_id || r.result?.message_id || r.ok);\nreturn [{ json: { ...d, telegram_estado: enviado ? 'ENVIADO' : 'ERROR', telegram_error: enviado ? '' : String(r.error?.message || r.error || 'Error desconocido').slice(0, 300) } }];\n"
+      }
+    },
+    {
+      "id": "3f42f5d6-9216-4f82-aa53-e2f4fd7dfb58",
+      "name": "Telegram no aplica",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        640
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nreturn [{ json: { ...$('Resultado Gmail').first().json, telegram_estado: 'NO_APLICA', telegram_error: 'Usuario sin Telegram vinculado' } }];\n"
+      }
+    },
+    {
+      "id": "565994c9-f22f-4c2c-bda1-429aa39c8cb3",
+      "name": "Fila de notificación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        480
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst d = $input.first().json;\nreturn [{ json: { notificacion_id: genId('NOT'), usuario_id: d.usuario_id, tipo: d.tipo, titulo: d.titulo, mensaje: d.mensaje, evento_id: d.evento_id, inscripcion_id: d.inscripcion_id,\n  fecha: ahora.toISOString(), gmail_estado: d.gmail_estado, telegram_estado: d.telegram_estado, gmail_error: d.gmail_error, telegram_error: d.telegram_error, clave_idempotencia: d.clave_idempotencia } }];\n"
+      }
+    },
+    {
+      "id": "191caa8e-2e6b-4ea4-8c24-37140ad602b6",
+      "name": "Registrar resultado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        3120,
+        480
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "11alXQhdWMBNz1mDs1gFXE58G8b1UIC-pA7STLM3icqY"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Notificaciones"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "c88a376f-bedb-4692-8342-aa53f8adf2a7",
+      "name": "Resultado de la notificación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nif ($('Fila de notificación').isExecuted) {\n  const f = $('Fila de notificación').first().json;\n  return [{ json: { resultado: 'PROCESADA', notificacion_id: f.notificacion_id, gmail_estado: f.gmail_estado, telegram_estado: f.telegram_estado, clave_idempotencia: f.clave_idempotencia } }];\n}\nconst d = $('Preparar destinatarios').first().json;\nreturn [{ json: { resultado: 'OMITIDO', motivo: d.motivo, gmail_estado: 'NO_APLICA', telegram_estado: 'NO_APLICA', clave_idempotencia: d.clave_idempotencia } }];\n"
+      }
+    }
+  ],
+  "connections": {
+    "Recibir notificación": {
+      "main": [
+        [
+          {
+            "node": "Validar entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar entrada": {
+      "main": [
+        [
+          {
+            "node": "Consultar usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar usuario": {
+      "main": [
+        [
+          {
+            "node": "Consultar chat_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar chat_id": {
+      "main": [
+        [
+          {
+            "node": "Leer notificaciones previas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer notificaciones previas": {
+      "main": [
+        [
+          {
+            "node": "Preparar destinatarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar destinatarios": {
+      "main": [
+        [
+          {
+            "node": "¿Omitir?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Omitir?": {
+      "main": [
+        [
+          {
+            "node": "Resultado de la notificación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Gmail": {
+      "main": [
+        [
+          {
+            "node": "Resultado Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado Gmail": {
+      "main": [
+        [
+          {
+            "node": "¿Tiene Telegram?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Tiene Telegram?": {
+      "main": [
+        [
+          {
+            "node": "Enviar Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram no aplica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Telegram": {
+      "main": [
+        [
+          {
+            "node": "Resultado Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado Telegram": {
+      "main": [
+        [
+          {
+            "node": "Fila de notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram no aplica": {
+      "main": [
+        [
+          {
+            "node": "Fila de notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fila de notificación": {
+      "main": [
+        [
+          {
+            "node": "Registrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar resultado": {
+      "main": [
+        [
+          {
+            "node": "Resultado de la notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "NRT3LHofBWlOl8Sq",
+  "tags": []
+}

@@ -1,0 +1,886 @@
+{
+  "name": "WF04 — Administración CRUD de eventos",
+  "nodes": [
+    {
+      "id": "7e904d5e-f207-4ca7-aa3c-bd6d3979ac51",
+      "name": "Formulario de administración",
+      "webhookId": "9a13ff7a-8fef-4589-abef-7ed06d0e79be",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        320
+      ],
+      "parameters": {
+        "authentication": "basicAuth",
+        "formTitle": "EventPass · Administración de eventos",
+        "formDescription": "Solo para el administrador. Para CREAR llena todos los datos. Para CONSULTAR, PUBLICAR, CERRAR o CANCELAR basta el ID del evento. Para ACTUALIZAR escribe el ID y solo los campos que quieras cambiar.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Acción",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "CREAR"
+                  },
+                  {
+                    "option": "CONSULTAR"
+                  },
+                  {
+                    "option": "ACTUALIZAR"
+                  },
+                  {
+                    "option": "PUBLICAR"
+                  },
+                  {
+                    "option": "CERRAR"
+                  },
+                  {
+                    "option": "CANCELAR"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ID del evento",
+              "placeholder": "EVT-..."
+            },
+            {
+              "fieldLabel": "Nombre"
+            },
+            {
+              "fieldLabel": "Categoría",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "(sin cambio)"
+                  },
+                  {
+                    "option": "Tecnología"
+                  },
+                  {
+                    "option": "Emprendimiento"
+                  },
+                  {
+                    "option": "Networking"
+                  },
+                  {
+                    "option": "Educación"
+                  },
+                  {
+                    "option": "Comunidad"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Descripción",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldLabel": "Fecha",
+              "fieldType": "date"
+            },
+            {
+              "fieldLabel": "Hora",
+              "placeholder": "18:30"
+            },
+            {
+              "fieldLabel": "Lugar"
+            },
+            {
+              "fieldLabel": "Capacidad",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "URL de imagen",
+              "placeholder": "https://... o /img/eventos/tecnologia.svg"
+            },
+            {
+              "fieldLabel": "Organizador"
+            },
+            {
+              "fieldLabel": "Estado inicial",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "BORRADOR"
+                  },
+                  {
+                    "option": "PUBLICADO"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "path": "eventpass-admin-eventos",
+          "appendAttribution": false,
+          "buttonLabel": "Ejecutar acción"
+        }
+      },
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "uDZUf0jvVoA0go27",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "id": "9bd9f903-8764-4bbb-af5e-ea8ff99123c7",
+      "name": "Leer Eventos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        240,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Eventos"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "6661a849-1f67-4a03-adfb-c129a03d8d0f",
+      "name": "Leer Inscripciones",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        480,
+        320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Inscripciones"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "12a99061-812f-4ffb-9963-57a293316182",
+      "name": "Validar formulario",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst f = $('Formulario de administración').first().json;\nconst txt = (k) => String(f[k] ?? '').trim();\nconst accion = txt('Acción');\nconst id = txt('ID del evento').toUpperCase();\nconst errores = [];\nconst datos = {};\nconst CATEGORIAS = [\"Tecnología\",\"Emprendimiento\",\"Networking\",\"Educación\",\"Comunidad\"];\n\nif (txt('Nombre')) datos.nombre = txt('Nombre');\nif (txt('Categoría') && txt('Categoría') !== '(sin cambio)') datos.categoria = txt('Categoría');\nif (txt('Descripción')) datos.descripcion = txt('Descripción');\nif (txt('Fecha')) { const d = txt('Fecha').slice(0, 10); if (/^\\d{4}-\\d{2}-\\d{2}$/.test(d)) datos.fecha = d; else errores.push('la fecha debe tener formato AAAA-MM-DD'); }\nif (txt('Hora')) { const h = txt('Hora'); if (/^([01]\\d|2[0-3]):[0-5]\\d$/.test(h)) datos.hora = h; else errores.push('la hora debe tener formato HH:MM (24 h)'); }\nif (txt('Lugar')) datos.lugar = txt('Lugar');\nif (txt('Capacidad')) { const c = Number(txt('Capacidad')); if (Number.isInteger(c) && c > 0 && c <= 5000) datos.capacidad = String(c); else errores.push('la capacidad debe ser un entero entre 1 y 5000'); }\nif (txt('URL de imagen')) { const u = txt('URL de imagen'); if (/^(https?:\\/\\/|\\/)/.test(u)) datos.imagen_url = u; else errores.push('la URL de imagen debe empezar por https:// o /'); }\nif (txt('Organizador')) datos.organizador = txt('Organizador');\nif (datos.categoria && !CATEGORIAS.includes(datos.categoria)) errores.push('categoría no permitida');\n\nif (accion === 'CREAR') {\n  for (const k of ['nombre', 'categoria', 'descripcion', 'fecha', 'hora', 'lugar', 'capacidad', 'organizador']) if (!datos[k]) errores.push('falta ' + k);\n} else if (!id) errores.push('escribe el ID del evento');\n\nconst auditoria = { evento_id: id, accion, resultado: 'ERROR' };\nif (errores.length) return fallo(400, 'FORMULARIO_INVALIDO', 'Revisa el formulario: ' + errores.join('; ') + '.', { _auditoria: { ...auditoria, detalle: errores.join('; ') } });\n\nconst eventos = filas('Leer Eventos', 'evento_id');\nconst evento = id ? eventos.find((e) => String(e.evento_id).toUpperCase() === id) : null;\nif (accion !== 'CREAR' && !evento) return fallo(404, 'EVENTO_NO_ENCONTRADO', 'No existe un evento con ID ' + id + '.', { _auditoria: { ...auditoria, detalle: 'ID no encontrado' } });\n\nconst ruta = { CREAR: 'crear', CONSULTAR: 'consultar', ACTUALIZAR: 'actualizar', PUBLICAR: 'estado', CERRAR: 'estado', CANCELAR: 'estado' }[accion];\nreturn [{ json: { ruta, accion, datos, estado_inicial: txt('Estado inicial') || 'BORRADOR', evento: evento ? sinFila(evento) : null } }];\n"
+      }
+    },
+    {
+      "id": "5e59fb34-bc22-45d0-9456-75925e401688",
+      "name": "Según acción",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        320
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "97aa57d2-d689-4f84-a92e-eed2b5450907",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "crear",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "crear"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a720e310-8bdc-4d3f-bb88-cb613d8de511",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "consultar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "consultar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "50f7591b-1724-4a83-b4a6-01216f39b5e3",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "actualizar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "actualizar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f63c458f-2740-4f63-9b70-686429a34040",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "estado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "estado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "621d6dac-5ac1-4091-90b9-30c16900ba64",
+                    "leftValue": "={{ $json.ruta }}",
+                    "rightValue": "error",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "error"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "376e78fc-daa5-4cc3-9c0d-4a00f03a4b3b",
+      "name": "Generar evento_id",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar formulario').first().json;\nconst fecha = ahora.toISOString();\nconst evento_id = genId('EVT');\nconst fila = { evento_id, ...v.datos, imagen_url: v.datos.imagen_url || '', estado: v.estado_inicial, fecha_creacion: fecha, fecha_actualizacion: fecha };\nreturn [{ json: { ...fila, _status: 201, _body: { ok: true, mensaje: 'Evento creado con ID ' + evento_id + ' en estado ' + fila.estado + '.', data: fila },\n  _auditoria: { evento_id, accion: 'CREAR', resultado: 'OK', detalle: 'Estado inicial ' + fila.estado } } }];\n"
+      }
+    },
+    {
+      "id": "92a82b0b-d62d-447f-a0a8-bbbfa21087a7",
+      "name": "Crear evento",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Eventos"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "b5492207-71a7-4a8f-b9cc-f64f9d2fbcac",
+      "name": "Buscar evento por ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        160
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst e = $('Validar formulario').first().json.evento;\nconst confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;\nreturn ok(200, { ...e, inscritos_confirmados: confirmadas }, 'Evento encontrado.', { _auditoria: { evento_id: e.evento_id, accion: 'CONSULTAR', resultado: 'OK', detalle: '' } });\n"
+      }
+    },
+    {
+      "id": "1b04077e-a711-4ab4-a72d-0c1bae6af563",
+      "name": "Preparar actualización",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar formulario').first().json;\nconst e = v.evento;\nconst audit = (resultado, detalle) => ({ _auditoria: { evento_id: e.evento_id, accion: 'ACTUALIZAR', resultado, detalle } });\nif (['CANCELADO'].includes(e.estado)) return fallo(409, 'EVENTO_CANCELADO', 'Un evento cancelado no se puede editar.', { aplicar: false, ...audit('ERROR', 'Evento cancelado') });\nconst cambios = Object.fromEntries(Object.entries(v.datos).filter(([k, val]) => String(e[k] ?? '') !== String(val)));\nif (!Object.keys(cambios).length) return fallo(400, 'SIN_CAMBIOS', 'No escribiste ningún dato distinto al actual.', { aplicar: false, ...audit('ERROR', 'Sin cambios') });\nif (cambios.capacidad) {\n  const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;\n  if (Number(cambios.capacidad) < confirmadas) return fallo(409, 'CAPACIDAD_INSUFICIENTE', 'Hay ' + confirmadas + ' inscripciones confirmadas; la capacidad no puede ser menor.', { aplicar: false, ...audit('ERROR', 'Capacidad menor a confirmadas') });\n}\nconst fila = { evento_id: e.evento_id, ...cambios, fecha_actualizacion: ahora.toISOString() };\nconst relevante = ['fecha', 'hora', 'lugar'].some((k) => k in cambios);\nreturn [{ json: { ...fila, aplicar: true, _status: 200, _body: { ok: true, mensaje: 'Evento ' + e.evento_id + ' actualizado: ' + Object.keys(cambios).join(', ') + '.', data: { ...e, ...fila } },\n  ...audit('OK', 'Campos: ' + Object.keys(cambios).join(', ')),\n  _notificacion: relevante ? { evento: { ...e, ...cambios }, tipo: 'EVENTO_ACTUALIZADO', titulo: 'Cambió la información de ' + e.nombre, mensaje: 'El evento ' + e.nombre + ' cambió de ' + Object.keys(cambios).filter((k) => ['fecha', 'hora', 'lugar'].includes(k)).join(', ') + '. Ahora es el ' + (cambios.fecha || e.fecha) + ' a las ' + (cambios.hora || e.hora) + ' en ' + (cambios.lugar || e.lugar) + '.' } : null } }];\n"
+      }
+    },
+    {
+      "id": "9d8310b1-262a-4b19-b353-ba864f9b0f11",
+      "name": "Validar cambio de estado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        480
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar formulario').first().json;\nconst e = v.evento;\nconst destino = { PUBLICAR: 'PUBLICADO', CERRAR: 'CERRADO', CANCELAR: 'CANCELADO' }[v.accion];\nconst permitidas = { BORRADOR: ['PUBLICADO', 'CANCELADO'], PUBLICADO: ['CERRADO', 'CANCELADO'], CERRADO: ['PUBLICADO', 'CANCELADO'], CANCELADO: [] };\nconst audit = (resultado, detalle) => ({ _auditoria: { evento_id: e.evento_id, accion: v.accion, resultado, detalle } });\nif (!(permitidas[e.estado] || []).includes(destino)) return fallo(409, 'TRANSICION_INVALIDA', 'No se puede pasar de ' + e.estado + ' a ' + destino + '.', { aplicar: false, ...audit('ERROR', e.estado + ' -> ' + destino + ' no permitido') });\nconst fila = { evento_id: e.evento_id, estado: destino, fecha_actualizacion: ahora.toISOString() };\nreturn [{ json: { ...fila, aplicar: true, _status: 200, _body: { ok: true, mensaje: 'Evento ' + e.evento_id + ' pasó de ' + e.estado + ' a ' + destino + '.', data: { ...e, ...fila } },\n  ...audit('OK', e.estado + ' -> ' + destino),\n  _notificacion: destino === 'CANCELADO' ? { evento: e, tipo: 'EVENTO_CANCELADO', titulo: e.nombre + ' fue cancelado', mensaje: 'Lamentamos informarte que el evento ' + e.nombre + ' del ' + e.fecha + ' fue cancelado por el organizador. Tu inscripción ya no es necesaria.' } : null } }];\n"
+      }
+    },
+    {
+      "id": "056be37e-9456-4422-a464-5808b8143829",
+      "name": "¿Aplicar cambios?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "42a16532-62c3-43a2-ab5d-b86c8ade3d21",
+              "leftValue": "={{ $json.aplicar }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "89dc4075-2943-4243-bb03-affe9cdefa83",
+      "name": "Actualizar evento",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        1680,
+        320
+      ],
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Eventos"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "evento_id"
+          ],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "0cab3227-a146-441b-aa1e-13413a3d8bc0",
+      "name": "Armar respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst candidatos = [\"Generar evento_id\",\"Preparar actualización\",\"Validar cambio de estado\",\"Buscar evento por ID\",\"Validar formulario\"];\nlet fuente = null;\nfor (const n of candidatos) {\n  if ($(n).isExecuted && $(n).first().json._body) { fuente = $(n).first().json; break; }\n}\nif (!fuente) fuente = { _status: 500, _body: { ok: false, error: { codigo: 'SIN_RESPUESTA', mensaje: 'La solicitud no produjo respuesta. Revisa la ejecución en n8n.' } } };\nreturn [{ json: { _status: fuente._status || 200, _body: fuente._body, _auditoria: fuente._auditoria || null, _notificacion: fuente._notificacion || null } }];\n"
+      }
+    },
+    {
+      "id": "9beaf375-7522-491d-92ec-dcd8cc7e8fde",
+      "name": "Fila de auditoría",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        320
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst a = $('Armar respuesta').first().json._auditoria || { evento_id: '', accion: 'DESCONOCIDA', resultado: 'ERROR', detalle: '' };\nreturn [{ json: { auditoria_id: genId('AUD'), evento_id: a.evento_id || '', accion: a.accion, fecha: ahora.toISOString(), resultado: a.resultado, detalle: a.detalle || '' } }];\n"
+      }
+    },
+    {
+      "id": "11b23d3d-359e-42fc-bdd4-8d39751d7627",
+      "name": "Registrar auditoría",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        2400,
+        320
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Auditoria_Eventos"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TcJ57zh8J0fcVSXs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "id": "7191b251-2af3-42a2-8dd5-424cf4f8e16f",
+      "name": "Mostrar resultado",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "executeOnce": true,
+      "position": [
+        2640,
+        320
+      ],
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "={{ $('Armar respuesta').first().json._body.ok ? 'Acción realizada' : 'No se pudo completar' }}",
+        "completionMessage": "={{ (() => { const b = $('Armar respuesta').first().json._body; if (!b.ok) return b.error.mensaje; const d = b.data || {}; return b.mensaje + (d.evento_id ? '\\n\\n' + ['ID: ' + d.evento_id, 'Nombre: ' + d.nombre, 'Categoría: ' + d.categoria, 'Fecha: ' + d.fecha + ' ' + d.hora, 'Lugar: ' + d.lugar, 'Capacidad: ' + d.capacidad, 'Estado: ' + d.estado].concat(d.inscritos_confirmados !== undefined ? ['Confirmadas: ' + d.inscritos_confirmados] : []).join('\\n') : ''); })() }}",
+        "options": {}
+      },
+      "webhookId": "99845fb2-65b3-4e89-a641-69f474b4211b"
+    },
+    {
+      "id": "faf9df41-b40b-4aa7-b9b5-279692427bc0",
+      "name": "Inscritos a notificar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        640
+      ],
+      "parameters": {
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst n = $('Armar respuesta').first().json._notificacion;\nif (!n || !$('Actualizar evento').isExecuted) return [];\nreturn filas('Leer Inscripciones', 'inscripcion_id')\n  .filter((i) => i.evento_id === n.evento.evento_id && ['CONFIRMADA', 'LISTA_ESPERA'].includes(i.estado))\n  .map((i) => ({ json: { usuario_id: i.usuario_id, tipo: n.tipo, titulo: n.titulo, mensaje: n.mensaje, evento_id: n.evento.evento_id, inscripcion_id: i.inscripcion_id, clave_idempotencia: n.tipo + '|' + i.inscripcion_id + '|' + ahora.toISOString().slice(0, 16) } }));\n"
+      }
+    },
+    {
+      "id": "9b739762-7026-4e70-8aa6-6e3f9e0da5df",
+      "name": "Notificar inscritos (WF09)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "alwaysOutputData": true,
+      "position": [
+        2400,
+        640
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "NRT3LHofBWlOl8Sq"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Formulario de administración": {
+      "main": [
+        [
+          {
+            "node": "Leer Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Eventos": {
+      "main": [
+        [
+          {
+            "node": "Leer Inscripciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Inscripciones": {
+      "main": [
+        [
+          {
+            "node": "Validar formulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar formulario": {
+      "main": [
+        [
+          {
+            "node": "Según acción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Según acción": {
+      "main": [
+        [
+          {
+            "node": "Generar evento_id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar evento por ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar actualización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validar cambio de estado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar evento_id": {
+      "main": [
+        [
+          {
+            "node": "Crear evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear evento": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar evento por ID": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar actualización": {
+      "main": [
+        [
+          {
+            "node": "¿Aplicar cambios?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar cambio de estado": {
+      "main": [
+        [
+          {
+            "node": "¿Aplicar cambios?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Aplicar cambios?": {
+      "main": [
+        [
+          {
+            "node": "Actualizar evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar evento": {
+      "main": [
+        [
+          {
+            "node": "Armar respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar respuesta": {
+      "main": [
+        [
+          {
+            "node": "Fila de auditoría",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Inscritos a notificar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fila de auditoría": {
+      "main": [
+        [
+          {
+            "node": "Registrar auditoría",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar auditoría": {
+      "main": [
+        [
+          {
+            "node": "Mostrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inscritos a notificar": {
+      "main": [
+        [
+          {
+            "node": "Notificar inscritos (WF09)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveManualExecutions": true,
+    "timezone": "America/Bogota",
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "active": true,
+  "id": "zIHMLT4GE8JIKxzN",
+  "tags": []
+}
