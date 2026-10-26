@@ -1,6 +1,6 @@
 # EventPass
 
-**Estudiante:** Fabian
+**Estudiantes:** Fabian y Rueda
 **Aplicación publicada (Vercel):** https://eventpass-zeta.vercel.app
 **Repositorio:** https://github.com/BL8X3R/eventpass
 
