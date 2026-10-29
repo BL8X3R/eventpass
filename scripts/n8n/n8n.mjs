@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Uso: node scripts/n8n/n8n.mjs <build|setup-sheets|push|export|status> [correo_base]
+// Uso: node scripts/n8n/n8n.mjs <build|setup-sheets|setup-sheet|push|export|status> [correo_base | EPxx]
 // Lee la API key de n8n desde ~/.config/eventpass/n8n_api_key (nunca desde el repo).
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -10,7 +10,7 @@ const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
 const CONFIG = join(AQUI, 'config.local.json');
 const ORDEN = ['WF09_notificaciones', 'WF01_usuarios_crud', 'WF02_auth_sesiones', 'WF03_vinculacion_telegram', 'WF04_eventos_crud', 'WF05_catalogo_publico',
-  'WF06_inscripciones_crud', 'WF07_reasignacion_lista_espera', 'WF08_recordatorios', 'WF10_eventpass_assistant'];
+  'WF06_inscripciones_crud', 'WF07_reasignacion_lista_espera', 'WF08_recordatorios', 'WF10_eventpass_assistant', 'WF11_checkin_digital'];
 
 const cfg = existsSync(CONFIG) ? JSON.parse(readFileSync(CONFIG, 'utf8')) : {};
 cfg.n8nUrl ||= 'http://localhost:5678';
@@ -79,6 +79,22 @@ async function subir(nombre, activar = true) {
   return res.id;
 }
 
+async function crearSheets(cuerpo) {
+  const id = await subir('WF00_setup_google_sheets');
+  try {
+    await esperarWebhook('eventpass/setup-sheets');
+    const res = await fetch(cfg.n8nUrl + '/webhook/eventpass/setup-sheets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) });
+    const data = await res.json();
+    if (!data.ok) throw new Error(JSON.stringify(data));
+    cfg.sheets = { ...cfg.sheets, ...Object.fromEntries(data.archivos.map((a) => [a.clave, a.spreadsheetId])) };
+    cfg.sheetsUrls = { ...cfg.sheetsUrls, ...Object.fromEntries(data.archivos.map((a) => [a.clave, a.url])) };
+    guardarCfg();
+    for (const a of data.archivos) console.log(`✔ ${a.titulo}: ${a.url}`);
+  } finally {
+    await api('POST', `/workflows/${id}/deactivate`).catch(() => {});
+  }
+}
+
 const comandos = {
   async build() {
     const dir = join(AQUI, 'build');
@@ -92,19 +108,14 @@ const comandos = {
   async 'setup-sheets'(correoBase) {
     if (!correoBase) throw new Error('Indica el correo base para los usuarios demo, p. ej. tucorreo@gmail.com');
     if (cfg.sheets?.EP01) throw new Error('Los Sheets ya existen en config.local.json; no se crean de nuevo.');
-    const id = await subir('WF00_setup_google_sheets');
-    try {
-      await esperarWebhook('eventpass/setup-sheets');
-      const res = await fetch(cfg.n8nUrl + '/webhook/eventpass/setup-sheets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ correo_base: correoBase }) });
-      const data = await res.json();
-      if (!data.ok) throw new Error(JSON.stringify(data));
-      cfg.sheets = Object.fromEntries(data.archivos.map((a) => [a.clave, a.spreadsheetId]));
-      cfg.sheetsUrls = Object.fromEntries(data.archivos.map((a) => [a.clave, a.url]));
-      guardarCfg();
-      for (const a of data.archivos) console.log(`✔ ${a.titulo}: ${a.url}`);
-    } finally {
-      await api('POST', `/workflows/${id}/deactivate`).catch(() => {});
-    }
+    await crearSheets({ correo_base: correoBase });
+  },
+
+  // Crea un solo archivo nuevo (p. ej. EP11) cuando los demás ya existen.
+  async 'setup-sheet'(clave) {
+    if (!/^EP\d{2}$/.test(clave || '')) throw new Error('Indica la clave del archivo, p. ej. EP11');
+    if (cfg.sheets?.[clave]) throw new Error(clave + ' ya existe en config.local.json; no se crea de nuevo.');
+    await crearSheets({ solo: [clave] });
   },
 
   async push(solo) {

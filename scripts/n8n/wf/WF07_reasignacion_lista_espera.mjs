@@ -15,10 +15,10 @@ export default function (cfg) {
   w.agrupar('Agrupar lista de espera', 'espera', [6, 1]);
 
   w.code('Calcular cupos libres y elegir promovidos', `
-// Cupos libres = capacidad - CONFIRMADAS. Se promueve en orden de llegada (fecha_inscripcion ASC).
+// Cupos libres = capacidad - (CONFIRMADAS + ASISTIO). Se promueve en orden de llegada (fecha_inscripcion ASC).
 const espera = ($json.espera || []).filter((i) => i && i.inscripcion_id);
 const confirmadas = {};
-for (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;
+for (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (i.estado === 'CONFIRMADA' || i.estado === 'ASISTIO') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;
 const salida = [];
 for (const e of filas('Eventos PUBLICADOS', 'evento_id')) {
   if (fechaEvento(e) <= ahora) continue;

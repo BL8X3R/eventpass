@@ -216,6 +216,11 @@ textarea { min-height: 90px; resize: vertical; }
 .estado-confirmada { color: var(--exito); }
 .estado-lista_espera { color: var(--aviso); }
 .estado-cancelada { color: var(--tinta-2); }
+.estado-asistio { color: var(--cobalto); }
+
+/* Check-in digital: códigos que el asistente muestra en la entrada. */
+.codigo-checkin { margin: 8px 0 0; font-size: .92rem; color: var(--tinta-2); }
+.codigo-checkin code { font-weight: 700; color: var(--tinta); background: var(--carton); border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; }
 
 /* Fila de casillas: cada casilla es un cupo (o un grupo de cupos en eventos grandes). */
 .cupos { display: grid; gap: 6px; }

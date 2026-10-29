@@ -85,7 +85,7 @@ function recordarTelegram() {
   if (s) { s.telegram_vinculado = true; sesion.guardar(s); }
 }
 
-const NOMBRE_ESTADO = { CONFIRMADA: 'Cupo confirmado', LISTA_ESPERA: 'En lista de espera', CANCELADA: 'Cancelada' };
+const NOMBRE_ESTADO = { CONFIRMADA: 'Cupo confirmado', LISTA_ESPERA: 'En lista de espera', CANCELADA: 'Cancelada', ASISTIO: 'Asististe' };
 
 // ---------- navegación ----------
 function pintarNav() {
@@ -93,8 +93,8 @@ function pintarNav() {
   const ruta = location.hash.split('?')[0] || '#/';
   const enlace = (href, texto, extra = '') => `<a href="${href}" ${ruta === href || (href !== '#/' && ruta.startsWith(href)) ? 'aria-current="page"' : ''} ${extra}>${texto}</a>`;
   nav.innerHTML = s
-    ? enlace('#/', 'Eventos') + enlace('#/cuenta', 'Mi cuenta') + '<a href="#/salir">Salir</a>'
-    : enlace('#/', 'Eventos') + enlace('#/ingresar', 'Ingresar') + '<a class="boton" href="#/registro">Crear cuenta</a>';
+    ? enlace('#/', 'Eventos') + enlace('#/checkin', 'Check-in') + enlace('#/cuenta', 'Mi cuenta') + '<a href="#/salir">Salir</a>'
+    : enlace('#/', 'Eventos') + enlace('#/checkin', 'Check-in') + enlace('#/ingresar', 'Ingresar') + '<a class="boton" href="#/registro">Crear cuenta</a>';
 }
 
 // ---------- vista: catálogo ----------
@@ -225,6 +225,7 @@ async function vistaDetalle(id) {
 
 function panelAccion(ev, insc, telegramOk) {
   const volver = encodeURIComponent('/evento/' + ev.evento_id);
+  if (insc?.estado === 'ASISTIO') return aviso('exito', NOMBRE_ESTADO.ASISTIO, `Tu ingreso a este evento ya quedó registrado. Gracias por venir, ${insc.nombre_acreditacion}.`);
   if (insc) {
     return `${aviso(insc.estado === 'CONFIRMADA' ? 'exito' : 'info', NOMBRE_ESTADO[insc.estado],
       insc.estado === 'CONFIRMADA' ? `Tu credencial saldrá a nombre de ${insc.nombre_acreditacion}.` : `Estás en la posición ${insc.orden_espera || '?'} de la lista de espera. Si se libera un cupo, lo asignamos en orden de llegada y te avisamos.`)}
@@ -343,7 +344,8 @@ async function tabInscripciones(cont) {
           <span style="color:var(--tinta-2);font-size:.95rem">${esc(i.evento.fecha)} a las ${esc(i.evento.hora)}, ${esc(i.evento.lugar)}</span></div>
           <span class="estado estado-${i.estado.toLowerCase()}">${NOMBRE_ESTADO[i.estado]}${i.estado === 'LISTA_ESPERA' && i.orden_espera ? ' (posición ' + esc(i.orden_espera) + ')' : ''}</span>
         </div>
-        ${i.estado === 'CANCELADA' ? '' : `
+        ${i.estado === 'CONFIRMADA' ? `<p class="codigo-checkin">Para tu ingreso muestra en la entrada: <code>${esc(i.inscripcion_id)}</code> · <code>${esc(i.evento_id)}</code></p>` : ''}
+        ${['CANCELADA', 'ASISTIO'].includes(i.estado) ? '' : `
         <details><summary>Editar datos de la credencial</summary>
           <form data-editar="${esc(i.inscripcion_id)}" novalidate>
             <div class="campo"><label for="na-${esc(i.inscripcion_id)}">Nombre en la credencial</label><input id="na-${esc(i.inscripcion_id)}" name="nombre_acreditacion" value="${esc(i.nombre_acreditacion)}" maxlength="80" required></div>
@@ -455,6 +457,49 @@ async function salir() {
   location.hash = '#/';
 }
 
+// ---------- vista: check-in digital (examen) ----------
+// Pantalla para la persona que recibe a los asistentes en la entrada del evento.
+function vistaCheckin(params) {
+  app.innerHTML = `<section class="formulario-pagina"><div class="contenedor"><div class="panel">
+    <h1>Check-in del evento</h1>
+    <p class="bajada">Registra el ingreso de un asistente con el código de su inscripción y el código del evento. Lo encuentra en Mi cuenta, en Mis inscripciones.</p>
+    <form id="form-checkin" novalidate>
+      <div class="campo"><label for="inscripcion_id">Código de la inscripción</label><input id="inscripcion_id" name="inscripcion_id" value="${esc(params.get('inscripcion') || '')}" placeholder="INS-…" autocomplete="off" required></div>
+      <div class="campo"><label for="evento_id">Código del evento</label><input id="evento_id" name="evento_id" value="${esc(params.get('evento') || '')}" placeholder="EVT-001" autocomplete="off" required></div>
+      <button class="boton" type="submit" style="width:100%">Registrar ingreso</button>
+    </form>
+    <div id="resultado-checkin" aria-live="polite"></div>
+  </div></div></section>`;
+
+  const form = document.getElementById('form-checkin');
+  const zona = document.getElementById('resultado-checkin');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(form));
+    if (!d.inscripcion_id.trim() || !d.evento_id.trim()) {
+      zona.innerHTML = aviso('error', 'Faltan datos', 'Escribe el código de la inscripción y el código del evento.');
+      return;
+    }
+    const boton = form.querySelector('[type=submit]');
+    boton.setAttribute('aria-busy', 'true'); boton.disabled = true;
+    zona.innerHTML = '<p role="status">Registrando ingreso…</p>';
+    try {
+      const r = await api.checkin.registrar(d.inscripcion_id.trim(), d.evento_id.trim());
+      const c = r.data.checkin;
+      zona.innerHTML = aviso('exito', 'Check-in realizado correctamente',
+        `${r.data.nombre_acreditacion || 'El asistente'} ingresó a ${r.data.evento.nombre} a las ${hora(c.fecha_checkin)}. Le enviamos la confirmación por Gmail y Telegram.`,
+        `<p class="codigo-checkin">Registro: <code>${esc(c.checkin_id)}</code></p>`);
+      form.reset();
+    } catch (err) {
+      // n8n responde DUPLICADO con el código CHECKIN_DUPLICADO; cualquier otro error es un RECHAZADO.
+      if (err.codigo === 'CHECKIN_DUPLICADO') zona.innerHTML = aviso('info', 'Ingreso ya registrado', err.message);
+      else zona.innerHTML = aviso('error', err.status ? 'Check-in rechazado' : 'No se pudo registrar', err.message);
+    } finally {
+      boton.removeAttribute('aria-busy'); boton.disabled = false;
+    }
+  });
+}
+
 // ---------- enrutador ----------
 async function enrutar() {
   const [ruta, query] = (location.hash.slice(1) || '/').split('?');
@@ -466,6 +511,7 @@ async function enrutar() {
   else if (partes[0] === 'ingresar') vistaIngresar(params);
   else if (partes[0] === 'registro') vistaRegistro(params);
   else if (partes[0] === 'cuenta') vistaCuenta(partes[1], params);
+  else if (partes[0] === 'checkin') vistaCheckin(params);
   else if (partes[0] === 'salir') await salir();
   else await vistaCatalogo(params);
 }

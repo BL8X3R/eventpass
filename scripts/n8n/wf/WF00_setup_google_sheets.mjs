@@ -1,7 +1,7 @@
 import { crearWorkflow } from '../lib.mjs';
 import { readFileSync } from 'node:fs';
 
-// Workflow auxiliar de un solo uso: crea los 10 archivos de Google Sheets con sus hojas,
+// Workflow auxiliar de un solo uso: crea los 11 archivos de Google Sheets con sus hojas,
 // encabezados y datos de prueba. Se ejecuta una vez y luego se desactiva.
 export default function (cfg) {
   const w = crearWorkflow('WF00 — Setup de Google Sheets (auxiliar)', cfg);
@@ -14,6 +14,9 @@ export default function (cfg) {
   w.code('Definir archivos y datos de prueba', `
 const s = ${JSON.stringify(semilla)};
 const correo = String($('Webhook Setup').first().json.body?.correo_base || '').trim().toLowerCase();
+// "solo": ["EP11"] crea únicamente esos archivos (para sumar uno nuevo sin duplicar los existentes).
+const solo = $('Webhook Setup').first().json.body?.solo;
+if (Array.isArray(solo) && solo.length) s.archivos = s.archivos.filter((a) => solo.includes(a.clave));
 const [local, dominio] = correo.includes('@') ? correo.split('@') : ['demo', 'example.com'];
 const dia = 86400000;
 const fechaLocal = (offsetMs) => new Date(Date.now() + offsetMs - 5 * 3600000).toISOString();

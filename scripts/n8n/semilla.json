@@ -1,5 +1,5 @@
 {
-  "nota": "Estructura y datos de prueba de los 10 archivos de Google Sheets. {FECHA:n} = hoy + n días (hora Bogotá); {FECHA_EN:h}/{HORA_EN:h} = dentro de h horas; {ISO:n} = ahora + n días en ISO; {EMAIL:alias} = correo_base con +alias. Contraseña de los usuarios demo: EventPass2026.",
+  "nota": "Estructura y datos de prueba de los 11 archivos de Google Sheets. {FECHA:n} = hoy + n días (hora Bogotá); {FECHA_EN:h}/{HORA_EN:h} = dentro de h horas; {ISO:n} = ahora + n días en ISO; {EMAIL:alias} = correo_base con +alias. Contraseña de los usuarios demo: EventPass2026.",
   "archivos": [
     {
       "clave": "EP01", "titulo": "EP01_Usuarios",
@@ -97,6 +97,12 @@
       "hojas": [
         { "nombre": "Conversaciones", "columnas": ["conversation_id", "usuario_id", "visitor_id", "fecha_inicio", "fecha_ultima_interaccion", "estado"], "filas": [] },
         { "nombre": "Mensajes", "columnas": ["message_id", "conversation_id", "usuario_id", "visitor_id", "rol", "mensaje", "timestamp"], "filas": [] }
+      ]
+    },
+    {
+      "clave": "EP11", "titulo": "EP11_Checkin",
+      "hojas": [
+        { "nombre": "Checkins", "columnas": ["checkin_id", "inscripcion_id", "evento_id", "usuario_id", "fecha_checkin", "resultado", "detalle"], "filas": [] }
       ]
     }
   ]

@@ -17,7 +17,7 @@ Cómo funciona EventPass:
 - Vincular Telegram: en Mi cuenta se pide un código de 6 caracteres que dura 10 minutos y se envía al bot como "/vincular CODIGO". Cada código sirve una sola vez.
 - Si hay cupo la inscripción queda CONFIRMADA. Si el evento está lleno queda en LISTA_ESPERA.
 - Cuando alguien cancela, el cupo se reasigna automáticamente a quien lleva más tiempo en lista de espera, y se le avisa por Gmail y Telegram.
-- Estados de inscripción: CONFIRMADA, LISTA_ESPERA, CANCELADA. Estados de evento visibles: PUBLICADO (abierto), CERRADO (no recibe inscripciones), CANCELADO.
+- Estados de inscripción: CONFIRMADA, LISTA_ESPERA, CANCELADA, ASISTIO (ya hizo check-in en la entrada del evento). Estados de evento visibles: PUBLICADO (abierto), CERRADO (no recibe inscripciones), CANCELADO.
 - 24 horas antes del evento se envía un recordatorio por Gmail y Telegram a quienes tienen cupo confirmado.
 - Una persona solo puede tener una inscripción activa por evento.`;
 
@@ -49,7 +49,7 @@ return [{ json: { conversation_id, usuario_id, visitor_id, texto, cerrar: texto.
 const id = $('Identificar conversación').first().json;
 const confirmadas = {}, espera = {};
 for (const i of filas('Leer Inscripciones (solo lectura)', 'inscripcion_id')) {
-  if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;
+  if (i.estado === 'CONFIRMADA' || i.estado === 'ASISTIO') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;
   if (i.estado === 'LISTA_ESPERA') espera[i.evento_id] = (espera[i.evento_id] || 0) + 1;
 }
 const lineas = filas('Leer Eventos (solo lectura)', 'evento_id').filter((e) => e.estado !== 'BORRADOR').map((e) => {

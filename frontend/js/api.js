@@ -89,6 +89,9 @@ export const api = {
     actualizar: (inscripcion_id, datos) => webhook('inscripciones', { accion: 'actualizar', session_token: sesion.token(), inscripcion_id, ...datos }),
     cancelar: (inscripcion_id) => webhook('inscripciones', { accion: 'cancelar', session_token: sesion.token(), inscripcion_id }),
   },
+  checkin: {
+    registrar: (inscripcion_id, evento_id) => webhook('checkin', { inscripcion_id, evento_id }),
+  },
   async chat(sessionId, texto) {
     if (!config.chatUrl) throw new ErrorApi('SIN_CONFIG', 'El asistente no está configurado (falta N8N_CHAT_URL).');
     const u = sesion.actual()?.usuario;

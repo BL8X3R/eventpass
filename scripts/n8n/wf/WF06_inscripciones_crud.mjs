@@ -36,8 +36,8 @@ if (e.estado !== 'PUBLICADO') return no(409, 'EVENTO_NO_DISPONIBLE', 'Este event
 if (fechaEvento(e) <= ahora) return no(409, 'EVENTO_FINALIZADO', 'Este evento ya empezó o terminó.');
 
 // Idempotencia: usuario_id + evento_id no puede tener dos inscripciones activas.
-const activa = filas('Leer Inscripciones', 'inscripcion_id').find((i) => i.usuario_id === u.usuario_id && i.evento_id === e.evento_id && ['CONFIRMADA', 'LISTA_ESPERA'].includes(i.estado));
-if (activa) return ok(200, { inscripcion: sinFila(activa), ya_existia: true }, activa.estado === 'CONFIRMADA' ? 'Ya tienes tu cupo confirmado en este evento.' : 'Ya estás en la lista de espera de este evento.', { puede: false, ...audit('OMITIDO', 'Inscripción activa existente (idempotencia)', { inscripcion_id: activa.inscripcion_id, estado_anterior: activa.estado, estado_nuevo: activa.estado }) });
+const activa = filas('Leer Inscripciones', 'inscripcion_id').find((i) => i.usuario_id === u.usuario_id && i.evento_id === e.evento_id && ['CONFIRMADA', 'LISTA_ESPERA', 'ASISTIO'].includes(i.estado));
+if (activa) return ok(200, { inscripcion: sinFila(activa), ya_existia: true }, activa.estado === 'CONFIRMADA' ? 'Ya tienes tu cupo confirmado en este evento.' : activa.estado === 'ASISTIO' ? 'Ya registraste tu ingreso a este evento.' : 'Ya estás en la lista de espera de este evento.', { puede: false, ...audit('OMITIDO', 'Inscripción activa existente (idempotencia)', { inscripcion_id: activa.inscripcion_id, estado_anterior: activa.estado, estado_nuevo: activa.estado }) });
 return [{ json: { puede: true, evento: sinFila(e) } }];
 `, [8, 0]);
   w.siVerdadero('¿Puede inscribirse?', 'puede', [9, 0]);
@@ -45,7 +45,7 @@ return [{ json: { puede: true, evento: sinFila(e) } }];
 const { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;
 const e = $('Validar evento, Telegram y duplicado').first().json.evento;
 const delEvento = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id);
-const confirmadas = delEvento.filter((i) => i.estado === 'CONFIRMADA').length;
+const confirmadas = delEvento.filter((i) => ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;
 const enEspera = delEvento.filter((i) => i.estado === 'LISTA_ESPERA').length;
 const hayCupo = confirmadas < Number(e.capacidad);
 const estado = hayCupo ? 'CONFIRMADA' : 'LISTA_ESPERA';
@@ -102,6 +102,7 @@ if (!i) return fallo(404, 'INSCRIPCION_NO_ENCONTRADA', 'No encontramos esa inscr
 const e = filas('Leer Eventos', 'evento_id').find((x) => x.evento_id === i.evento_id) || {};
 const audit = (resultado, detalle) => ({ _auditoria: { inscripcion_id: i.inscripcion_id, usuario_id: u.usuario_id, evento_id: i.evento_id, accion: 'CANCELAR', estado_anterior: i.estado, estado_nuevo: resultado === 'OK' ? 'CANCELADA' : i.estado, resultado, detalle } });
 if (i.estado === 'CANCELADA') return ok(200, { inscripcion: sinFila(i), ya_existia: true }, 'Esta inscripción ya estaba cancelada.', { aplicar: false, ...audit('OMITIDO', 'Ya cancelada (idempotencia)') });
+if (i.estado === 'ASISTIO') return fallo(409, 'INSCRIPCION_CON_ASISTENCIA', 'Ya registraste tu ingreso a este evento; la inscripción no se puede cancelar.', { aplicar: false, ...audit('ERROR', 'Asistencia registrada') });
 if (e.evento_id && fechaEvento(e) <= ahora) return fallo(409, 'EVENTO_FINALIZADO', 'El evento ya empezó; la inscripción no se puede cancelar.', { aplicar: false, ...audit('ERROR', 'Evento iniciado') });
 const fila = { inscripcion_id: i.inscripcion_id, estado: 'CANCELADA', orden_espera: '', fecha_actualizacion: ahora.toISOString() };
 const liberaCupo = i.estado === 'CONFIRMADA';
