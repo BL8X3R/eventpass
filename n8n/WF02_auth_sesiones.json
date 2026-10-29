@@ -2,7 +2,7 @@
   "name": "WF02 — Autenticación y sesiones",
   "nodes": [
     {
-      "id": "37ce41f4-5348-4174-a25d-8e8499b91d62",
+      "id": "53b50e49-16f2-43c0-99f6-96ffabe676fc",
       "name": "Webhook Auth",
       "webhookId": "d4452e85-d291-450c-a17f-b46f97132b2b",
       "type": "n8n-nodes-base.webhook",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "8f1f5a53-c57e-46f3-ad45-da0a9c37518f",
+      "id": "d9e3b249-b071-4964-9668-d5ca6653bf18",
       "name": "Leer Usuarios",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -39,7 +39,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -50,13 +50,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "0d42ebd8-7e0a-4696-8205-a4c274d96da2",
+      "id": "9526e11c-1262-4082-aaaa-14f590a40982",
       "name": "Leer Sesiones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -74,7 +74,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -85,13 +85,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "8d9ec0ed-8112-4595-accf-ed209c98dfee",
+      "id": "a4cfde0b-5cb3-4ee4-b780-d4026b5a28d3",
       "name": "Validar solicitud",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -104,7 +104,7 @@
       }
     },
     {
-      "id": "8441e505-bc48-4a62-aa5b-d9af871a0e32",
+      "id": "28127b4e-a6fd-46b7-abfb-b0be3df79e7d",
       "name": "Según acción",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -125,7 +125,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "6ee6890e-2823-43b7-a2b4-90b420fce1ea",
+                    "id": "45aa0c38-3f78-4d65-96fa-ae80b42e53b1",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "login",
                     "operator": {
@@ -149,7 +149,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "597da7d9-bd4b-45ca-a41a-cf2c7773875d",
+                    "id": "917d6504-f257-4b98-a106-00641ee66776",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "sesion",
                     "operator": {
@@ -173,7 +173,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "d32a0b08-0f3a-412c-876f-c6934952304c",
+                    "id": "1dd76020-c80b-4502-a99a-bae4c95149c0",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "error",
                     "operator": {
@@ -193,7 +193,7 @@
       }
     },
     {
-      "id": "cb7b26a1-057f-4e8a-b2a6-8563e4a574f4",
+      "id": "69a4fd08-2a91-4296-b53d-bb50d08dcf09",
       "name": "Verificar password (hash + salt)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -206,7 +206,7 @@
       }
     },
     {
-      "id": "6fcf6c88-bd84-42b9-a5f1-96cca71b2715",
+      "id": "36e8fb79-279a-4a49-92c1-34d0b1dd6cd7",
       "name": "¿Credenciales válidas?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -224,7 +224,7 @@
           },
           "conditions": [
             {
-              "id": "c14d1084-e6d1-46e5-b1a5-862a88c492d3",
+              "id": "ce533c67-e536-4587-9121-4724f9d8f0bd",
               "leftValue": "={{ $json.valido }}",
               "rightValue": "",
               "operator": {
@@ -240,7 +240,7 @@
       }
     },
     {
-      "id": "e5e1f547-d69e-4b73-9c7f-2e5ff72f7d97",
+      "id": "bbb6a0b9-0275-4dc5-9059-022d4fd9a0e5",
       "name": "Generar token de sesión",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -253,7 +253,7 @@
       }
     },
     {
-      "id": "98adad22-3f4f-44cd-8a67-57531f4a6898",
+      "id": "62e8cbd3-ab64-4938-804f-5051c5f9f6b8",
       "name": "Registrar sesión",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -269,7 +269,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -289,13 +289,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "be1493f7-54b6-49e0-9569-aa1a3177d1d8",
+      "id": "5d5ca005-c759-46e2-846a-12aa7279054d",
       "name": "Validar sesión y expiración",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -308,7 +308,7 @@
       }
     },
     {
-      "id": "30cb46e6-bffa-4f99-bed4-a500916aba79",
+      "id": "22fcfbac-6b22-4347-8385-9a117c79b2cd",
       "name": "¿Actualizar sesión?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -326,7 +326,7 @@
           },
           "conditions": [
             {
-              "id": "d8c0e0a4-2498-4f43-b403-61747aa6b434",
+              "id": "d1f6c6b2-35bc-429c-a41d-761f9a95d56e",
               "leftValue": "={{ $json.actualizar }}",
               "rightValue": "",
               "operator": {
@@ -342,7 +342,7 @@
       }
     },
     {
-      "id": "020fda4c-1bdf-47bc-a78f-e1362d9e8381",
+      "id": "861be43e-2a2b-45e6-9c6a-6c172830ed36",
       "name": "Actualizar estado de sesión",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -358,7 +358,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -380,13 +380,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "98b6ddfb-8ce9-484f-8c94-f38f444f338a",
+      "id": "aa3a2b5c-0da0-4424-886d-2b696d20257a",
       "name": "Armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -399,7 +399,7 @@
       }
     },
     {
-      "id": "7bada245-8682-45b3-8789-73eb2103c8f7",
+      "id": "76e5f372-23ba-49c8-a082-11b015f63cfc",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -597,6 +597,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "qc1FBF99QwC0Y8WZ",
+  "id": "2k5WMqmVaH6VJJga",
   "tags": []
 }

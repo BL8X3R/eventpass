@@ -2,7 +2,7 @@
   "name": "WF10 — EventPass Assistant",
   "nodes": [
     {
-      "id": "58895d53-6d99-4759-b8a9-f2d857f56acc",
+      "id": "e66b2ae2-013c-46f4-b8e8-8228e06212f4",
       "name": "Chat Trigger",
       "webhookId": "70c09f6f-8bcc-4a66-af38-ed32c6e1f26a",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "558b69a0-9e35-4af4-bb17-c7472db1e844",
+      "id": "bcb1eaa3-1c3a-4896-9ba8-347c57a5809d",
       "name": "Identificar conversación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -35,7 +35,7 @@
       }
     },
     {
-      "id": "49da5be0-221c-486f-98b5-5a8abd52855b",
+      "id": "0ef5d0bc-20a6-4798-98da-0875ae2ed78a",
       "name": "Leer Eventos (solo lectura)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -53,7 +53,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -64,13 +64,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "53273f35-9f88-4cca-9e9d-38168d2ddb6d",
+      "id": "a404ab94-2d1d-4218-8ef9-bd6a69713feb",
       "name": "Leer Inscripciones (solo lectura)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -88,7 +88,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -99,13 +99,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "cf27cd04-461f-42fb-9595-07c10c4bded7",
+      "id": "b5f94fb8-b63a-49d2-83b9-a183892c7143",
       "name": "Leer Conversaciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -123,7 +123,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+          "value": "1qIphpgqIqep2UPWBYyoK_FPwnGClcdg6YIa7GQ3agGE"
         },
         "sheetName": {
           "__rl": true,
@@ -134,13 +134,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "d7b61334-7cb7-4d8c-8a7f-cc174894e1ec",
+      "id": "e4081ed7-013f-42c3-8b07-4b9f61822be4",
       "name": "Preparar contexto del catálogo",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -149,11 +149,11 @@
         320
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst id = $('Identificar conversación').first().json;\nconst confirmadas = {}, espera = {};\nfor (const i of filas('Leer Inscripciones (solo lectura)', 'inscripcion_id')) {\n  if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\n  if (i.estado === 'LISTA_ESPERA') espera[i.evento_id] = (espera[i.evento_id] || 0) + 1;\n}\nconst lineas = filas('Leer Eventos (solo lectura)', 'evento_id').filter((e) => e.estado !== 'BORRADOR').map((e) => {\n  const cupos = Math.max(Number(e.capacidad) - (confirmadas[e.evento_id] || 0), 0);\n  const pasado = fechaEvento(e) <= ahora;\n  return '- ' + e.nombre + ' | ' + e.categoria + ' | ' + String(e.fecha).slice(0, 10) + ' ' + e.hora + ' | ' + e.lugar + ' | estado ' + e.estado + (pasado ? ' (ya pasó)' : '') + ' | cupos libres ' + cupos + ' de ' + e.capacidad + ' | en lista de espera ' + (espera[e.evento_id] || 0) + ' | organiza ' + e.organizador;\n});\nconst contexto = 'Fecha y hora actual (Bogotá): ' + ahora.toLocaleString('es-CO', { timeZone: 'America/Bogota' }) + '\\n\\nCATÁLOGO:\\n' + (lineas.join('\\n') || '(no hay eventos publicados)');\nconst previa = filas('Leer Conversaciones', 'conversation_id').find((c) => c.conversation_id === id.conversation_id);\nconst conversacion = {\n  conversation_id: id.conversation_id,\n  usuario_id: id.usuario_id || (previa ? previa.usuario_id : ''),\n  visitor_id: id.visitor_id,\n  fecha_inicio: previa ? previa.fecha_inicio : ahora.toISOString(),\n  fecha_ultima_interaccion: ahora.toISOString(),\n  estado: id.cerrar ? 'CERRADA' : 'ABIERTA',\n};\nreturn [{ json: { ...conversacion, nueva: !previa, contexto } }];\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst id = $('Identificar conversación').first().json;\nconst confirmadas = {}, espera = {};\nfor (const i of filas('Leer Inscripciones (solo lectura)', 'inscripcion_id')) {\n  if (i.estado === 'CONFIRMADA' || i.estado === 'ASISTIO') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\n  if (i.estado === 'LISTA_ESPERA') espera[i.evento_id] = (espera[i.evento_id] || 0) + 1;\n}\nconst lineas = filas('Leer Eventos (solo lectura)', 'evento_id').filter((e) => e.estado !== 'BORRADOR').map((e) => {\n  const cupos = Math.max(Number(e.capacidad) - (confirmadas[e.evento_id] || 0), 0);\n  const pasado = fechaEvento(e) <= ahora;\n  return '- ' + e.nombre + ' | ' + e.categoria + ' | ' + String(e.fecha).slice(0, 10) + ' ' + e.hora + ' | ' + e.lugar + ' | estado ' + e.estado + (pasado ? ' (ya pasó)' : '') + ' | cupos libres ' + cupos + ' de ' + e.capacidad + ' | en lista de espera ' + (espera[e.evento_id] || 0) + ' | organiza ' + e.organizador;\n});\nconst contexto = 'Fecha y hora actual (Bogotá): ' + ahora.toLocaleString('es-CO', { timeZone: 'America/Bogota' }) + '\\n\\nCATÁLOGO:\\n' + (lineas.join('\\n') || '(no hay eventos publicados)');\nconst previa = filas('Leer Conversaciones', 'conversation_id').find((c) => c.conversation_id === id.conversation_id);\nconst conversacion = {\n  conversation_id: id.conversation_id,\n  usuario_id: id.usuario_id || (previa ? previa.usuario_id : ''),\n  visitor_id: id.visitor_id,\n  fecha_inicio: previa ? previa.fecha_inicio : ahora.toISOString(),\n  fecha_ultima_interaccion: ahora.toISOString(),\n  estado: id.cerrar ? 'CERRADA' : 'ABIERTA',\n};\nreturn [{ json: { ...conversacion, nueva: !previa, contexto } }];\n"
       }
     },
     {
-      "id": "c4482ad4-295c-4a48-bbc9-2521368315bb",
+      "id": "7d5b1cdf-86a5-4247-bbd1-eb5a603e3cf1",
       "name": "Guardar conversación",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -169,7 +169,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+          "value": "1qIphpgqIqep2UPWBYyoK_FPwnGClcdg6YIa7GQ3agGE"
         },
         "sheetName": {
           "__rl": true,
@@ -191,13 +191,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "948ff1ac-2fe9-4f83-8712-7baf668f39d3",
+      "id": "f11448f7-88fe-4ec5-a54b-836ef6ea46ef",
       "name": "Mensajes del usuario",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -210,7 +210,7 @@
       }
     },
     {
-      "id": "3c7004cd-ccca-4a3f-bfc3-a9236a99f897",
+      "id": "114f7f22-d882-4aef-9cbb-609225d565c1",
       "name": "Guardar mensaje USER",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -226,7 +226,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+          "value": "1qIphpgqIqep2UPWBYyoK_FPwnGClcdg6YIa7GQ3agGE"
         },
         "sheetName": {
           "__rl": true,
@@ -246,13 +246,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "456f7747-4436-450e-ac98-ad83fd3fc85d",
+      "id": "665ddaab-6fdb-479e-aa5e-32ebf0ffa855",
       "name": "¿Cerrar conversación?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -265,7 +265,7 @@
       }
     },
     {
-      "id": "c6d33bce-2dfc-40dd-94f7-367190ad14f3",
+      "id": "0583fb76-e04c-459f-a5c9-6cd01e32cece",
       "name": "¿Cerrar?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -283,7 +283,7 @@
           },
           "conditions": [
             {
-              "id": "725de33c-d448-48bc-8b20-2dd62afefd9a",
+              "id": "cd6db02c-5c60-45b9-a744-94d0a7e0a9f2",
               "leftValue": "={{ $json.cerrar }}",
               "rightValue": "",
               "operator": {
@@ -299,7 +299,7 @@
       }
     },
     {
-      "id": "3a6ae879-24fb-4aa9-9c63-4dcfc0bafba8",
+      "id": "d876bf18-49e5-4ce4-819b-b1b7eaeaa0e4",
       "name": "EventPass Assistant (IA)",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
@@ -313,12 +313,12 @@
         "promptType": "define",
         "text": "={{ $('Identificar conversación').first().json.texto }}",
         "options": {
-          "systemMessage": "=Eres EventPass Assistant, el asistente de soporte de EventPass, una plataforma de eventos de tecnología y emprendimiento (meetups, hackatones, talleres, networking).\n\nRespondes en español, en tono cercano y directo, con respuestas cortas (máximo 6 líneas salvo que pidan un listado).\n\nPuedes informar sobre: eventos, categorías, fechas, lugares, cupos, lista de espera, estados de inscripción, vinculación con Telegram y cómo funciona EventPass.\n\nRestricciones estrictas (eres un asistente SOLO INFORMATIVO):\n- No puedes crear usuarios, iniciar sesión, inscribir, cancelar inscripciones, modificar eventos, cambiar cupos ni cambiar ningún estado. No tienes herramientas para hacerlo.\n- Si te piden una de esas acciones, explica en qué parte de la web se hace (Crear cuenta, Ingresar, botón Inscribirme en el evento, Mi cuenta) y no digas que lo hiciste.\n- No inventes eventos, fechas, lugares ni cupos: usa solo los datos del bloque CATÁLOGO. Si algo no aparece, dilo.\n- Nunca pidas ni repitas contraseñas, tokens o códigos de vinculación.\n\nCómo funciona EventPass:\n- Cualquiera puede ver el catálogo. Para inscribirse hay que crear cuenta, iniciar sesión y vincular Telegram desde Mi cuenta.\n- Vincular Telegram: en Mi cuenta se pide un código de 6 caracteres que dura 10 minutos y se envía al bot como \"/vincular CODIGO\". Cada código sirve una sola vez.\n- Si hay cupo la inscripción queda CONFIRMADA. Si el evento está lleno queda en LISTA_ESPERA.\n- Cuando alguien cancela, el cupo se reasigna automáticamente a quien lleva más tiempo en lista de espera, y se le avisa por Gmail y Telegram.\n- Estados de inscripción: CONFIRMADA, LISTA_ESPERA, CANCELADA. Estados de evento visibles: PUBLICADO (abierto), CERRADO (no recibe inscripciones), CANCELADO.\n- 24 horas antes del evento se envía un recordatorio por Gmail y Telegram a quienes tienen cupo confirmado.\n- Una persona solo puede tener una inscripción activa por evento.\n\n{{ $('Preparar contexto del catálogo').first().json.contexto }}"
+          "systemMessage": "=Eres EventPass Assistant, el asistente de soporte de EventPass, una plataforma de eventos de tecnología y emprendimiento (meetups, hackatones, talleres, networking).\n\nRespondes en español, en tono cercano y directo, con respuestas cortas (máximo 6 líneas salvo que pidan un listado).\n\nPuedes informar sobre: eventos, categorías, fechas, lugares, cupos, lista de espera, estados de inscripción, vinculación con Telegram y cómo funciona EventPass.\n\nRestricciones estrictas (eres un asistente SOLO INFORMATIVO):\n- No puedes crear usuarios, iniciar sesión, inscribir, cancelar inscripciones, modificar eventos, cambiar cupos ni cambiar ningún estado. No tienes herramientas para hacerlo.\n- Si te piden una de esas acciones, explica en qué parte de la web se hace (Crear cuenta, Ingresar, botón Inscribirme en el evento, Mi cuenta) y no digas que lo hiciste.\n- No inventes eventos, fechas, lugares ni cupos: usa solo los datos del bloque CATÁLOGO. Si algo no aparece, dilo.\n- Nunca pidas ni repitas contraseñas, tokens o códigos de vinculación.\n\nCómo funciona EventPass:\n- Cualquiera puede ver el catálogo. Para inscribirse hay que crear cuenta, iniciar sesión y vincular Telegram desde Mi cuenta.\n- Vincular Telegram: en Mi cuenta se pide un código de 6 caracteres que dura 10 minutos y se envía al bot como \"/vincular CODIGO\". Cada código sirve una sola vez.\n- Si hay cupo la inscripción queda CONFIRMADA. Si el evento está lleno queda en LISTA_ESPERA.\n- Cuando alguien cancela, el cupo se reasigna automáticamente a quien lleva más tiempo en lista de espera, y se le avisa por Gmail y Telegram.\n- Estados de inscripción: CONFIRMADA, LISTA_ESPERA, CANCELADA, ASISTIO (ya hizo check-in en la entrada del evento). Estados de evento visibles: PUBLICADO (abierto), CERRADO (no recibe inscripciones), CANCELADO.\n- 24 horas antes del evento se envía un recordatorio por Gmail y Telegram a quienes tienen cupo confirmado.\n- Una persona solo puede tener una inscripción activa por evento.\n\n{{ $('Preparar contexto del catálogo').first().json.contexto }}"
         }
       }
     },
     {
-      "id": "13db9ab0-6d4d-4b4e-badd-34c0d9818fa5",
+      "id": "a71fc41d-5c1c-4ec8-8e78-6d201129bbc7",
       "name": "Google Gemini",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -335,13 +335,13 @@
       },
       "credentials": {
         "googlePalmApi": {
-          "id": "n5EIh04zJmp7OSVp",
+          "id": "AKMyWxupEbfz2Nmg",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
     },
     {
-      "id": "c006f396-d838-4f01-8ab9-f79e5f3e6a87",
+      "id": "5f504e91-1d4f-495b-8bd2-db337d1cf926",
       "name": "Memoria de la conversación",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -356,7 +356,7 @@
       }
     },
     {
-      "id": "6494ebb7-42ef-44c9-834d-6f0e2012a35e",
+      "id": "f0167cbf-dfe8-4d12-9260-51cae0ffea4f",
       "name": "Mensaje ASSISTANT",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -369,7 +369,7 @@
       }
     },
     {
-      "id": "988751d7-79f6-45ef-890f-af197ab0c91d",
+      "id": "51c5a9b3-dcf8-4cdf-9cbf-151712ab6597",
       "name": "Guardar mensaje ASSISTANT",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -385,7 +385,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1qZybb-QnyuSRkDbg4TMOgh1LpHrVuTFTCPpwZOBZ8Ec"
+          "value": "1qIphpgqIqep2UPWBYyoK_FPwnGClcdg6YIa7GQ3agGE"
         },
         "sheetName": {
           "__rl": true,
@@ -405,13 +405,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "cc6092b6-12a3-49b0-9384-48addccdac0d",
+      "id": "ae93c5c6-bfae-4233-8c72-f0d4e72c86a2",
       "name": "Respuesta al chat",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -617,6 +617,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "scPCC9ophfxcEttp",
+  "id": "fPQdow3N9NaJVUNO",
   "tags": []
 }

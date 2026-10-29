@@ -2,7 +2,7 @@
   "name": "WF05 — Catálogo público",
   "nodes": [
     {
-      "id": "2e490b5c-03df-4e8b-8478-f05d58c02063",
+      "id": "00653109-22dd-4b43-8e85-263993d5a772",
       "name": "Webhook Catálogo",
       "webhookId": "27c80de6-7af5-42ed-a3fb-f445cf5ac27b",
       "type": "n8n-nodes-base.webhook",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "6f18dce1-5041-4f33-8580-cd731e55ae0e",
+      "id": "1518e0b1-0479-43c3-8041-593ace6906e7",
       "name": "Leer Eventos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -39,7 +39,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -50,13 +50,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "517d4c1a-6aca-4dda-8fda-93cfd2271e39",
+      "id": "3430696b-935e-4382-a3db-27bb380e50b4",
       "name": "Solo eventos publicables",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -75,7 +75,7 @@
           },
           "conditions": [
             {
-              "id": "72715810-7874-4181-a5d5-a8c91e09f7b4",
+              "id": "a4935dbd-45d4-4584-a1a1-170ce2598b98",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "PUBLICADO",
               "operator": {
@@ -84,7 +84,7 @@
               }
             },
             {
-              "id": "88dbb7ed-7b74-4ad8-9f42-6df53bc0ed1b",
+              "id": "699ae73c-61b6-41ff-bc07-65eeb06456c1",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "CERRADO",
               "operator": {
@@ -93,7 +93,7 @@
               }
             },
             {
-              "id": "60f39186-17d6-4b29-8d02-bc00b3b7d94d",
+              "id": "a9d5608d-48db-40c9-9002-248d59ec3ff3",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "CANCELADO",
               "operator": {
@@ -108,7 +108,7 @@
       }
     },
     {
-      "id": "19e1e19e-374f-4115-ad01-0a1376e747b7",
+      "id": "9fa9e5d6-e359-4da8-92cb-63fadb3a37f3",
       "name": "Leer Inscripciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -126,7 +126,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -137,13 +137,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "16f338a4-0471-48ca-ae97-6e9b4dfd1a7d",
+      "id": "5fc7cdf3-23de-4fa4-b8ee-450c7e5b8d3c",
       "name": "Inscripciones activas",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -162,7 +162,7 @@
           },
           "conditions": [
             {
-              "id": "31b6cd4c-130d-4894-96f3-d225d18cdfdc",
+              "id": "7a10543b-cf08-4522-8644-a78dda430046",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "CONFIRMADA",
               "operator": {
@@ -171,9 +171,18 @@
               }
             },
             {
-              "id": "b1072c9a-8ba8-441f-b8fe-30a600920673",
+              "id": "32aa5d15-f47a-4531-8d51-c55c5dab7019",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "LISTA_ESPERA",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "50022801-9441-49c7-adc0-18c7dd09c740",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "ASISTIO",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -186,7 +195,7 @@
       }
     },
     {
-      "id": "1aeab1ea-79ad-4498-a586-1e44788b6939",
+      "id": "bbb992b2-f746-4cd4-ad15-88450925017f",
       "name": "Agrupar inscripciones",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
@@ -201,7 +210,7 @@
       }
     },
     {
-      "id": "32453f04-4418-4705-8909-5b136cd3935c",
+      "id": "f5370c4e-1864-4caf-8c15-0223bc11d31d",
       "name": "Calcular cupos y armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -210,11 +219,11 @@
         160
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst b = $('Webhook Catálogo').first().json.body || {};\nconst accion = String(b.accion || 'listado').trim().toLowerCase();\nconst visitor_id = String(b.visitor_id || '').slice(0, 64);\nconst log = (tipo, extra) => ({ _log: { tipo, visitor_id, evento_id: '', categoria: '', ...extra } });\nif (!['listado', 'detalle', 'filtro'].includes(accion)) return fallo(400, 'ACCION_INVALIDA', 'La acción debe ser listado, detalle o filtro.', log('LISTADO', { status_http: 400, resultado_count: 0 }));\n\nconst inscripciones = ($json.inscripciones || []).filter((i) => i && i.inscripcion_id);\nconst conteo = {};\nfor (const i of inscripciones) {\n  conteo[i.evento_id] ??= { confirmadas: 0, espera: 0 };\n  if (i.estado === 'CONFIRMADA') conteo[i.evento_id].confirmadas++;\n  else conteo[i.evento_id].espera++;\n}\nconst HORAS_PROXIMO = 48;\nconst eventos = filas('Solo eventos publicables', 'evento_id').map((e) => {\n  const capacidad = Number(e.capacidad) || 0;\n  const c = conteo[e.evento_id] || { confirmadas: 0, espera: 0 };\n  const inicio = fechaEvento(e);\n  const futuro = inicio > ahora;\n  const cupos = Math.max(capacidad - c.confirmadas, 0);\n  return {\n    evento_id: e.evento_id, nombre: e.nombre, categoria: e.categoria, descripcion: e.descripcion,\n    fecha: String(e.fecha).slice(0, 10), hora: e.hora, inicio: inicio.toISOString(), lugar: e.lugar, imagen_url: e.imagen_url, organizador: e.organizador, estado: e.estado,\n    capacidad, inscritos: c.confirmadas, cupos_disponibles: cupos, lista_espera: c.espera,\n    inscripcion_abierta: e.estado === 'PUBLICADO' && futuro,\n    lleno: cupos === 0,\n    proximo: futuro && (inicio - ahora) <= HORAS_PROXIMO * 3600 * 1000,\n  };\n}).sort((a, b) => (b.inscripcion_abierta - a.inscripcion_abierta) || (new Date(a.inicio) - new Date(b.inicio)));\nconst categorias = [...new Set(eventos.map((e) => e.categoria))].sort();\n\nif (accion === 'detalle') {\n  const id = String(b.evento_id || '').trim().toUpperCase();\n  const e = eventos.find((x) => String(x.evento_id).toUpperCase() === id);\n  if (!e) return fallo(404, 'EVENTO_NO_ENCONTRADO', 'Ese evento no existe o todavía no está publicado.', log('DETALLE', { evento_id: id, status_http: 404, resultado_count: 0 }));\n  return ok(200, { evento: e }, 'Detalle del evento.', log('DETALLE', { evento_id: e.evento_id, status_http: 200, resultado_count: 1 }));\n}\nif (accion === 'filtro') {\n  const cat = String(b.categoria || '').trim();\n  const lista = eventos.filter((e) => e.categoria.toLowerCase() === cat.toLowerCase());\n  return ok(200, { eventos: lista, categorias, categoria: cat }, lista.length + ' eventos en ' + cat + '.', log('FILTRO', { categoria: cat, status_http: 200, resultado_count: lista.length }));\n}\nreturn ok(200, { eventos, categorias }, eventos.length + ' eventos.', log('LISTADO', { status_http: 200, resultado_count: eventos.length }));\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst b = $('Webhook Catálogo').first().json.body || {};\nconst accion = String(b.accion || 'listado').trim().toLowerCase();\nconst visitor_id = String(b.visitor_id || '').slice(0, 64);\nconst log = (tipo, extra) => ({ _log: { tipo, visitor_id, evento_id: '', categoria: '', ...extra } });\nif (!['listado', 'detalle', 'filtro'].includes(accion)) return fallo(400, 'ACCION_INVALIDA', 'La acción debe ser listado, detalle o filtro.', log('LISTADO', { status_http: 400, resultado_count: 0 }));\n\nconst inscripciones = ($json.inscripciones || []).filter((i) => i && i.inscripcion_id);\nconst conteo = {};\nfor (const i of inscripciones) {\n  conteo[i.evento_id] ??= { confirmadas: 0, espera: 0 };\n  // ASISTIO sigue ocupando el cupo que tenía la inscripción CONFIRMADA.\n  if (i.estado === 'CONFIRMADA' || i.estado === 'ASISTIO') conteo[i.evento_id].confirmadas++;\n  else conteo[i.evento_id].espera++;\n}\nconst HORAS_PROXIMO = 48;\nconst eventos = filas('Solo eventos publicables', 'evento_id').map((e) => {\n  const capacidad = Number(e.capacidad) || 0;\n  const c = conteo[e.evento_id] || { confirmadas: 0, espera: 0 };\n  const inicio = fechaEvento(e);\n  const futuro = inicio > ahora;\n  const cupos = Math.max(capacidad - c.confirmadas, 0);\n  return {\n    evento_id: e.evento_id, nombre: e.nombre, categoria: e.categoria, descripcion: e.descripcion,\n    fecha: String(e.fecha).slice(0, 10), hora: e.hora, inicio: inicio.toISOString(), lugar: e.lugar, imagen_url: e.imagen_url, organizador: e.organizador, estado: e.estado,\n    capacidad, inscritos: c.confirmadas, cupos_disponibles: cupos, lista_espera: c.espera,\n    inscripcion_abierta: e.estado === 'PUBLICADO' && futuro,\n    lleno: cupos === 0,\n    proximo: futuro && (inicio - ahora) <= HORAS_PROXIMO * 3600 * 1000,\n  };\n}).sort((a, b) => (b.inscripcion_abierta - a.inscripcion_abierta) || (new Date(a.inicio) - new Date(b.inicio)));\nconst categorias = [...new Set(eventos.map((e) => e.categoria))].sort();\n\nif (accion === 'detalle') {\n  const id = String(b.evento_id || '').trim().toUpperCase();\n  const e = eventos.find((x) => String(x.evento_id).toUpperCase() === id);\n  if (!e) return fallo(404, 'EVENTO_NO_ENCONTRADO', 'Ese evento no existe o todavía no está publicado.', log('DETALLE', { evento_id: id, status_http: 404, resultado_count: 0 }));\n  return ok(200, { evento: e }, 'Detalle del evento.', log('DETALLE', { evento_id: e.evento_id, status_http: 200, resultado_count: 1 }));\n}\nif (accion === 'filtro') {\n  const cat = String(b.categoria || '').trim();\n  const lista = eventos.filter((e) => e.categoria.toLowerCase() === cat.toLowerCase());\n  return ok(200, { eventos: lista, categorias, categoria: cat }, lista.length + ' eventos en ' + cat + '.', log('FILTRO', { categoria: cat, status_http: 200, resultado_count: lista.length }));\n}\nreturn ok(200, { eventos, categorias }, eventos.length + ' eventos.', log('LISTADO', { status_http: 200, resultado_count: eventos.length }));\n"
       }
     },
     {
-      "id": "5b64fe3d-bb79-48b8-a1d6-7cce6301dc92",
+      "id": "7f709a26-7644-438d-bfa7-7177f75f058c",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -231,7 +240,7 @@
       }
     },
     {
-      "id": "5ecb49df-5bff-427b-9463-a818c390da76",
+      "id": "63463836-4819-4ed2-8210-c4e0fa71ed95",
       "name": "Fila de consulta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -244,7 +253,7 @@
       }
     },
     {
-      "id": "72950c65-235e-47f4-90f5-1bf0d0399dc5",
+      "id": "2d0efa63-67bd-411b-8082-b7f35e1f1f7b",
       "name": "Registrar consulta",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -260,7 +269,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1uvgZfKLE9ffT3gBQPKIY3dTqWeO1VJ9uDEdy76Fma9M"
+          "value": "1z3VJ_KDLZGWfKz7uu7NiGMP2Jd2590I3sUz3J2R73Xk"
         },
         "sheetName": {
           "__rl": true,
@@ -280,7 +289,7 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
@@ -395,6 +404,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "oCMfPe53B14YpAT2",
+  "id": "ZDrSq9HOfblALaCJ",
   "tags": []
 }

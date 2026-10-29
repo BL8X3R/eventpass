@@ -2,7 +2,7 @@
   "name": "WF09 — Servicio central de notificaciones",
   "nodes": [
     {
-      "id": "f56f216d-44cb-4b33-aa68-5dd58319588e",
+      "id": "f7855a9e-0526-4330-9960-e1d3112104b7",
       "name": "Recibir notificación",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -15,7 +15,7 @@
       }
     },
     {
-      "id": "479a712a-7396-4acc-9c6c-5ef7a9c3e7a7",
+      "id": "e89fabe7-d683-4cf7-8ca6-02b6a0cc68d8",
       "name": "Validar entrada",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -28,7 +28,7 @@
       }
     },
     {
-      "id": "043a0bed-dc31-4b54-ae5e-4c1757533ee9",
+      "id": "4e8e71a6-55b0-4d1a-b6d7-c7a05844d108",
       "name": "Consultar usuario",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -46,7 +46,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -57,13 +57,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "63e7d0b3-8db8-4807-ac5a-d1547730e73e",
+      "id": "02a37baa-b8ca-4515-9a78-b3630d6c2690",
       "name": "Consultar chat_id",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -81,7 +81,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -92,13 +92,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "7140f652-a5b7-4a3c-a61f-1e80505c74a3",
+      "id": "cae36bc3-e9b8-4331-9332-f98f171901ab",
       "name": "Leer notificaciones previas",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -116,7 +116,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "11alXQhdWMBNz1mDs1gFXE58G8b1UIC-pA7STLM3icqY"
+          "value": "12eP2obCGgXh9OQycd58Lwn4CRgPlmWAU3FzD1UVRAhE"
         },
         "sheetName": {
           "__rl": true,
@@ -127,13 +127,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "75d8c9b1-17af-47c2-a9cd-e23e7446def4",
+      "id": "f2b2f0f7-b3d6-4c58-83cb-a880478571e6",
       "name": "Preparar destinatarios",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -146,7 +146,7 @@
       }
     },
     {
-      "id": "193071f5-0024-4988-b107-2296dc6518b6",
+      "id": "15b8988f-b201-414b-ac8b-421fd561da33",
       "name": "¿Omitir?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -164,7 +164,7 @@
           },
           "conditions": [
             {
-              "id": "0a86123d-a469-4a84-b455-b262bdd5b7c7",
+              "id": "bacad970-b926-46e2-99ce-e82adb1b33d7",
               "leftValue": "={{ $json.omitir }}",
               "rightValue": "",
               "operator": {
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "1e16faf8-5367-44bc-a536-7b920b8976db",
+      "id": "7dee657b-2fd3-404c-9d04-1340396b452c",
       "name": "Enviar Gmail",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -200,14 +200,14 @@
       },
       "credentials": {
         "gmailOAuth2": {
-          "id": "NNzcDFpYYW5mNKL9",
+          "id": "Cn9822Ohck3FtYI6",
           "name": "Gmail account"
         }
       },
-      "webhookId": "562e9003-e100-4706-8377-5fb09598e6e5"
+      "webhookId": "fe2b1b3e-357d-4f13-8e8c-17775177c036"
     },
     {
-      "id": "99fecaea-7b2e-4351-b086-7f5f198b96b3",
+      "id": "99d7089c-a335-481c-89a4-b5fbc83f3189",
       "name": "Resultado Gmail",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -220,7 +220,7 @@
       }
     },
     {
-      "id": "8f60d656-56d6-487e-bb8a-7617cd1c5e3c",
+      "id": "0feea589-cdb3-484a-97e9-8d12ce380d43",
       "name": "¿Tiene Telegram?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -238,7 +238,7 @@
           },
           "conditions": [
             {
-              "id": "568454eb-9bad-4a3c-87f2-b9bd81ef574a",
+              "id": "ea347309-3737-4b10-b75a-dc4b527132b2",
               "leftValue": "={{ $json.tiene_telegram }}",
               "rightValue": "",
               "operator": {
@@ -254,7 +254,7 @@
       }
     },
     {
-      "id": "9d32023f-a6ff-4fd0-8272-d6506b15add0",
+      "id": "d9283d98-31a0-47e6-a67b-e7f6ba155863",
       "name": "Enviar Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
@@ -272,14 +272,14 @@
       },
       "credentials": {
         "telegramApi": {
-          "id": "CtSsaDhTWZTLXNv4",
+          "id": "mCb1kVPnGsLTfIiZ",
           "name": "Telegram account"
         }
       },
-      "webhookId": "9f93564f-dc12-498b-82ca-3f5af8ae8d48"
+      "webhookId": "f863ecf3-88ba-42d4-badd-f0ad5c00453a"
     },
     {
-      "id": "891950d2-4960-4bed-bd24-a64842f39c38",
+      "id": "8f4c13a8-4968-4550-b153-ee282dea0737",
       "name": "Resultado Telegram",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -292,7 +292,7 @@
       }
     },
     {
-      "id": "3f42f5d6-9216-4f82-aa53-e2f4fd7dfb58",
+      "id": "a2606351-f668-4bb4-9297-46b999c772b1",
       "name": "Telegram no aplica",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -305,7 +305,7 @@
       }
     },
     {
-      "id": "565994c9-f22f-4c2c-bda1-429aa39c8cb3",
+      "id": "88f6e0d6-e24c-42e5-bfae-5288b52eee42",
       "name": "Fila de notificación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -318,7 +318,7 @@
       }
     },
     {
-      "id": "191caa8e-2e6b-4ea4-8c24-37140ad602b6",
+      "id": "d85c061a-9ce0-4aad-924a-1c048e554f69",
       "name": "Registrar resultado",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -334,7 +334,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "11alXQhdWMBNz1mDs1gFXE58G8b1UIC-pA7STLM3icqY"
+          "value": "12eP2obCGgXh9OQycd58Lwn4CRgPlmWAU3FzD1UVRAhE"
         },
         "sheetName": {
           "__rl": true,
@@ -354,13 +354,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "c88a376f-bedb-4692-8342-aa53f8adf2a7",
+      "id": "1b3e1083-1e1c-4799-a397-6098a6214be1",
       "name": "Resultado de la notificación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -562,6 +562,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "NRT3LHofBWlOl8Sq",
+  "id": "sIvD9W9vGFegdxp8",
   "tags": []
 }

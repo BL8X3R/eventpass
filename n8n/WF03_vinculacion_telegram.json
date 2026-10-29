@@ -2,7 +2,7 @@
   "name": "WF03 — Vinculación con Telegram",
   "nodes": [
     {
-      "id": "f9432828-70fd-471d-bd6b-ab369914ac3d",
+      "id": "d0baf807-bf88-4b64-a788-450f66d108d0",
       "name": "Webhook Telegram",
       "webhookId": "dd8c0a31-923b-4c4e-a5a9-788d7226c06f",
       "type": "n8n-nodes-base.webhook",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "d7abafe3-570e-4c3f-95cd-dcc67c3d4d4d",
+      "id": "cfd76f54-1bf1-43e3-9381-244fe2c74427",
       "name": "Leer Usuarios",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -39,7 +39,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -50,13 +50,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "269a33c8-57bd-41d3-827f-42112959f7bb",
+      "id": "8c5383df-be91-44ce-8069-bcc60c9624c8",
       "name": "Leer Sesiones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -74,7 +74,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -85,13 +85,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "c1ff207b-f66c-4343-a003-73eb4d719368",
+      "id": "7e6ac6cb-eed5-42fd-909c-03f36d8fd60f",
       "name": "Leer Códigos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -109,7 +109,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -120,13 +120,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "839304c4-7a7d-4233-9f7d-40072d39636b",
+      "id": "8343b04e-9e1b-4aa2-b060-4cd35ce71390",
       "name": "Leer Vinculaciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -144,7 +144,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -155,13 +155,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "e568244c-ea3d-446c-8487-10c556eb358f",
+      "id": "ed147e0d-7431-404f-8bb4-3f94d1f81333",
       "name": "Validar solicitud",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -174,7 +174,7 @@
       }
     },
     {
-      "id": "bbf60fab-9543-449c-96a1-a70752db64a0",
+      "id": "d08965dc-fb1d-4b8c-aa06-cbc923f01e3d",
       "name": "Según acción",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -195,7 +195,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "ca8c0933-731f-4e34-94ec-2e531fe15e3c",
+                    "id": "037f5e3e-e0f3-48f7-b516-bc2c753e2377",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "solicitar_codigo",
                     "operator": {
@@ -219,7 +219,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "137db3be-f395-4e3c-b172-442443c42192",
+                    "id": "5a96df38-5367-444a-aec3-c7c24e6d9643",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "estado",
                     "operator": {
@@ -243,7 +243,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "fb43fdaf-7114-4812-9e18-9d21c6fa5ace",
+                    "id": "61bf580d-87c5-4d3b-848f-ebe487d91259",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "error",
                     "operator": {
@@ -263,7 +263,7 @@
       }
     },
     {
-      "id": "88ff2d30-9782-4941-9dad-b1bd5d758b3c",
+      "id": "e0288491-f68e-4802-a9c5-efce46d8f920",
       "name": "Generar código temporal",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -276,7 +276,7 @@
       }
     },
     {
-      "id": "329433ed-df93-4a3e-85b2-bff9d3df6344",
+      "id": "2e9f2623-4ea7-466a-b143-d4cf281a6125",
       "name": "¿Código generado?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -294,7 +294,7 @@
           },
           "conditions": [
             {
-              "id": "8238d9c7-7bf3-4b5c-a17f-1063c5354d4e",
+              "id": "c1191220-0509-49c9-8898-3e6703f049ab",
               "leftValue": "={{ $json.generar }}",
               "rightValue": "",
               "operator": {
@@ -310,7 +310,7 @@
       }
     },
     {
-      "id": "a5152fc5-1edb-4e1e-b498-2d9ffb8c7896",
+      "id": "3bb41f7c-d8a2-479c-aa5d-44995ef12802",
       "name": "Guardar código",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -326,7 +326,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -346,13 +346,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "b76d4da1-bbca-48c0-aa26-c96d0a1f9a6d",
+      "id": "a543938b-a888-47e3-9743-f7b374d4c0f6",
       "name": "Consultar vinculación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -365,7 +365,7 @@
       }
     },
     {
-      "id": "95314986-39cb-49c2-a8be-88dc1a73f5eb",
+      "id": "5bcb2826-ea6e-4526-abe7-70f109d077b7",
       "name": "Armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -378,7 +378,7 @@
       }
     },
     {
-      "id": "9c991b99-c3e9-408c-8c62-2fc3fae90008",
+      "id": "e8a3f60f-f379-4225-96a9-b41678bc9c53",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -395,7 +395,7 @@
       }
     },
     {
-      "id": "87586ca6-e7d7-4de1-bb9d-4d2b5f6d5c1e",
+      "id": "25522794-806b-4982-8e49-212168b0a406",
       "name": "Códigos pendientes anteriores",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -408,7 +408,7 @@
       }
     },
     {
-      "id": "76527e84-b49a-4b65-8a3e-e9b84a0e9c47",
+      "id": "f95eb4f3-e0ef-4c09-8da8-89a87d812bdc",
       "name": "Cancelar códigos anteriores",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -424,7 +424,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -446,13 +446,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "9ac22db1-b99a-437f-a90a-ce21c653c58b",
+      "id": "cf68d08f-5206-4bd7-b7c5-de4a47fcf05b",
       "name": "Telegram Trigger",
       "webhookId": "ab24fdff-5e73-4b0d-ab4a-c94495aa7750",
       "type": "n8n-nodes-base.telegramTrigger",
@@ -469,13 +469,13 @@
       },
       "credentials": {
         "telegramApi": {
-          "id": "CtSsaDhTWZTLXNv4",
+          "id": "mCb1kVPnGsLTfIiZ",
           "name": "Telegram account"
         }
       }
     },
     {
-      "id": "26f2180f-7e3d-4e63-a960-193052c685b5",
+      "id": "88bdb2c3-55fa-4bbc-abfd-ddb11a89e5a4",
       "name": "Leer Códigos (bot)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -493,7 +493,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -504,13 +504,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "3ee3d392-d818-40fa-8838-84f5cf079dd1",
+      "id": "1ce3186a-1af6-46ef-931e-d767c9ff4f63",
       "name": "Leer Vinculaciones (bot)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -528,7 +528,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -539,13 +539,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "359cc1a7-b432-438f-a28c-67936e01bdce",
+      "id": "ed0f3070-a617-49fa-9791-0d8d3c7cf240",
       "name": "Extraer y validar código",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -558,7 +558,7 @@
       }
     },
     {
-      "id": "5a76f501-3027-4d55-a68a-0a22ff0e23a3",
+      "id": "6bccec99-c969-4f66-a937-39b2e035117c",
       "name": "Resultado de validación",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -579,7 +579,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "941bb50c-180d-44de-abd0-1281a82ee6d5",
+                    "id": "619d9e0f-eb85-4d7d-8f2e-2811e9339df0",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "cambiar_codigo",
                     "operator": {
@@ -603,7 +603,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "840acc62-14ab-48c3-9974-41e203bfcd79",
+                    "id": "608d647c-161c-4dc4-8cd9-6391dd7b8278",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "responder",
                     "operator": {
@@ -623,7 +623,7 @@
       }
     },
     {
-      "id": "d0b4baa7-0841-4d60-9e25-49e1390516ab",
+      "id": "86035cec-641f-410d-8bcb-25b1245514da",
       "name": "Cambio de estado del código",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -636,7 +636,7 @@
       }
     },
     {
-      "id": "b3510e6b-afa4-40de-b090-240999a92b00",
+      "id": "65d5e13b-4a29-4eca-a93f-0ba8ae2c1d8f",
       "name": "Actualizar estado del código",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -652,7 +652,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -674,13 +674,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "389f7e0c-676d-4936-ac6f-ecde4f65c0ab",
+      "id": "cc733aa5-42dd-4512-9fad-c79dfa7c1f48",
       "name": "¿Crear vinculación?",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -693,7 +693,7 @@
       }
     },
     {
-      "id": "ffdbe143-14b4-4e5d-bfd3-7e2f926c6b63",
+      "id": "917ea48e-2740-4599-86d4-4ebcbe41e2f5",
       "name": "¿Vincular?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -711,7 +711,7 @@
           },
           "conditions": [
             {
-              "id": "a80a2cba-b7d7-4420-90df-9bdbc42a7b59",
+              "id": "5c4e5f90-c227-4f51-9f64-bafe78859486",
               "leftValue": "={{ $json.vincular }}",
               "rightValue": "",
               "operator": {
@@ -727,7 +727,7 @@
       }
     },
     {
-      "id": "d5acdb51-3d61-4f58-b595-12df79cb140c",
+      "id": "c24b7f06-605c-4245-89c0-80931d743c9b",
       "name": "Fila de vinculación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -740,7 +740,7 @@
       }
     },
     {
-      "id": "671b2cfe-6193-488a-86b1-c9705f586fd7",
+      "id": "fd0e9745-d433-4182-84e3-8c4c31b5d523",
       "name": "Guardar vinculación",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -756,7 +756,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -776,13 +776,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "76e6d63a-45bd-4c7d-903b-16ffea216b5a",
+      "id": "ae91564a-a443-4b36-893a-240f70e1b287",
       "name": "Responder en Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
@@ -800,11 +800,11 @@
       },
       "credentials": {
         "telegramApi": {
-          "id": "CtSsaDhTWZTLXNv4",
+          "id": "mCb1kVPnGsLTfIiZ",
           "name": "Telegram account"
         }
       },
-      "webhookId": "b83b4171-53e7-4b60-a308-f1729e2c745c"
+      "webhookId": "49ea3f35-e122-4812-b92f-c7517dfaf74e"
     }
   ],
   "connections": {
@@ -1127,6 +1127,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "HftFhKn6lCawTubj",
+  "id": "PrZHSiA6nc6y0pXX",
   "tags": []
 }

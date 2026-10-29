@@ -441,7 +441,7 @@ Las validaciones van en este orden, y la primera que falla decide el resultado (
 
 ### Google Sheets: `EP11_Checkin`
 
-Archivo nuevo e independiente (no se guarda nada del check-in dentro de `EP06_Inscripciones`, solo se actualiza el estado). Hoja **`Checkins`**:
+Archivo nuevo e independiente (no se guarda nada del check-in dentro de `EP06_Inscripciones`, solo se actualiza el estado): [EP11_Checkin](https://docs.google.com/spreadsheets/d/16PX9wkm7VWhF_ftl8b9goC75Ep2yKesEo5gKelokB80/edit). Hoja **`Checkins`**:
 
 | Columna | Contenido |
 |---|---|

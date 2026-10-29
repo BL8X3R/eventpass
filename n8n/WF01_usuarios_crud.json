@@ -2,7 +2,7 @@
   "name": "WF01 — Usuarios CRUD",
   "nodes": [
     {
-      "id": "86d5ac11-fec4-4e48-909c-5da27ae95a3f",
+      "id": "a49fb768-e47f-4be6-8e63-ae0d69769a1c",
       "name": "Webhook Usuarios",
       "webhookId": "e55e1d7a-b622-4e92-a5a2-bd47c22308fa",
       "type": "n8n-nodes-base.webhook",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "1d925c7f-4b00-4b58-852d-13a9538c7ebb",
+      "id": "fd013fd7-c1e8-4872-b575-05c398eafb58",
       "name": "Leer Usuarios",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -39,7 +39,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -50,13 +50,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "5fa8d019-3278-43dd-ae40-ffc8a784ed42",
+      "id": "c3bad057-b214-49be-99bb-773c8e6adb11",
       "name": "Leer Sesiones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -74,7 +74,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -85,13 +85,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "4f31f95f-63a4-445a-94af-d566f38fb4db",
+      "id": "f4651337-665b-42e1-94da-23104df81ace",
       "name": "Validar solicitud",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -104,7 +104,7 @@
       }
     },
     {
-      "id": "b0b65016-7ff6-424a-9fd4-f83d7a06e613",
+      "id": "30e4a52a-bfed-4c7b-b435-6b132d757948",
       "name": "Según operación",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -125,7 +125,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "cb512b7d-6118-4857-a7f6-6d5a80c60445",
+                    "id": "ea9fdf85-4bb4-4d12-b94d-804533a0c485",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "crear",
                     "operator": {
@@ -149,7 +149,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "29514645-5a6b-4e3d-9251-e9684a5b0b81",
+                    "id": "925970ae-6080-43c4-b4ce-60413e0f8b5b",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "perfil",
                     "operator": {
@@ -173,7 +173,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "1854e309-affa-419f-b77a-3ff9c77d5517",
+                    "id": "68f8bd81-b823-4c21-a300-0e7ae6811f6f",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "actualizar",
                     "operator": {
@@ -197,7 +197,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "474772bf-1e0b-4125-96e0-825e66a1e07e",
+                    "id": "c45ff028-cc81-42c8-a2c9-6971a698ea81",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "desactivar",
                     "operator": {
@@ -221,7 +221,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "2a7b7962-3bcf-4e1b-988b-fd65deb29a39",
+                    "id": "8810161a-c3a7-4583-9fe1-f78717ec8ad2",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "error",
                     "operator": {
@@ -241,7 +241,7 @@
       }
     },
     {
-      "id": "73233400-3bca-49c4-b434-0a928819f323",
+      "id": "410aa90f-77ea-4412-bbec-23343887b21a",
       "name": "Control email duplicado",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -254,7 +254,7 @@
       }
     },
     {
-      "id": "3ed230b2-591d-4251-b2c1-bc7f3d5aeca6",
+      "id": "7283323d-faa2-48d6-8f52-d04fc755c247",
       "name": "¿Email duplicado?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -272,7 +272,7 @@
           },
           "conditions": [
             {
-              "id": "895b5447-6c4d-4b2e-b912-0edf7ea3e7cd",
+              "id": "8f15ad7e-f6b8-4199-ac63-01732e146b67",
               "leftValue": "={{ $json.duplicado }}",
               "rightValue": "",
               "operator": {
@@ -288,7 +288,7 @@
       }
     },
     {
-      "id": "1c84f8a2-ab11-4a7b-a805-b4404f26ca00",
+      "id": "8b1abfca-bcea-42f3-92b5-00a84d052086",
       "name": "Generar hash, salt y usuario_id",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -301,7 +301,7 @@
       }
     },
     {
-      "id": "63053268-e451-4832-8300-3da35703963e",
+      "id": "3dea894f-8fe1-44b7-812c-2ecd17fe71b5",
       "name": "Crear usuario",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -317,7 +317,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -337,13 +337,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "8afe686f-05af-44e0-ab41-202902fdedc3",
+      "id": "1c0ad349-1854-4663-a60b-39030c4454b4",
       "name": "Consultar perfil",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -356,7 +356,7 @@
       }
     },
     {
-      "id": "58a1d30c-8420-4e6b-a821-b3d529f99ec6",
+      "id": "e8fdb458-d656-45a8-92fd-35556e908715",
       "name": "Preparar actualización",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -369,7 +369,7 @@
       }
     },
     {
-      "id": "b8731761-5c6f-4d2d-973a-201aad0d6aeb",
+      "id": "b4a894e2-2e8d-495c-aeb6-8ba9738f3e2c",
       "name": "Preparar desactivación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -382,7 +382,7 @@
       }
     },
     {
-      "id": "cf3b0dd0-41c0-4b79-adde-23979f494d4d",
+      "id": "a679a57b-6ea4-4963-abd6-93688854c047",
       "name": "¿Aplicar cambios?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -400,7 +400,7 @@
           },
           "conditions": [
             {
-              "id": "054d3704-d0e0-4385-befe-e03894449098",
+              "id": "b25cf453-5b59-40e8-a8dd-2fa43a5b3ace",
               "leftValue": "={{ $json.aplicar }}",
               "rightValue": "",
               "operator": {
@@ -416,7 +416,7 @@
       }
     },
     {
-      "id": "d8407ce0-b1e4-4085-9614-cefae58b4f5a",
+      "id": "496a92f3-66e4-4662-a1a5-02cf40b45e79",
       "name": "Actualizar usuario",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -432,7 +432,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -454,13 +454,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "9a7705cb-cd05-45ed-8061-330f1129ab33",
+      "id": "fe3f5493-a26d-49ce-97e1-eeb518b5897e",
       "name": "Armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -473,7 +473,7 @@
       }
     },
     {
-      "id": "599beef0-d298-4d4d-a34e-e5d023562385",
+      "id": "16f1c68a-a82e-4ba6-9128-a2a4dddda897",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -490,7 +490,7 @@
       }
     },
     {
-      "id": "dcb70fa4-97c7-4360-9bc6-f94df9ebd026",
+      "id": "d8f7aaf8-14a6-452a-a013-fee3992c4936",
       "name": "Fila de auditoría",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -503,7 +503,7 @@
       }
     },
     {
-      "id": "36e1fb47-9fed-4a69-87aa-3837510f5a6e",
+      "id": "4c651177-77ec-4216-92ba-812cdfdbdc65",
       "name": "Registrar auditoría",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -519,7 +519,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -539,7 +539,7 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
@@ -784,6 +784,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "8dwh6tqUBUJLXVNO",
+  "id": "gVzSneRZRqA6pirW",
   "tags": []
 }

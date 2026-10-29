@@ -2,7 +2,7 @@
   "name": "WF08 — Recordatorios automáticos",
   "nodes": [
     {
-      "id": "4d939de5-d672-4d02-8a82-daef1180c6af",
+      "id": "4feebc24-53d9-4d42-81e4-0c6472d1f073",
       "name": "Cada 30 minutos",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "37cfb020-bd32-4014-872d-2a7dc9544191",
+      "id": "bda86460-1cc7-49b0-bfc9-36076d57905c",
       "name": "Leer Eventos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -40,7 +40,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -51,13 +51,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "1bc06999-15e0-4bbb-9712-b40e43a78e44",
+      "id": "01cec57b-2613-4c37-b404-16a238bcdc57",
       "name": "Eventos PUBLICADOS",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -76,7 +76,7 @@
           },
           "conditions": [
             {
-              "id": "41350cb0-4fd1-41e4-8f1a-aa2c78c7a6cc",
+              "id": "17d495fe-2cd6-4ca9-8ad7-d84a8d3b4a51",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "PUBLICADO",
               "operator": {
@@ -91,7 +91,7 @@
       }
     },
     {
-      "id": "af66b811-33e2-4960-9ef4-85217e0764a7",
+      "id": "6b739dec-016c-43e9-8a31-101718855c4b",
       "name": "Leer Inscripciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -109,7 +109,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -120,13 +120,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "bbd25719-90c6-4ebf-8bbb-4360ba0347f2",
+      "id": "bba2e4a8-cc1a-4d71-aac6-24829906f27b",
       "name": "Inscripciones CONFIRMADAS",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -145,7 +145,7 @@
           },
           "conditions": [
             {
-              "id": "2585ca00-1ffe-4e58-8e0a-90bc5e9aedb0",
+              "id": "51a9e9da-d904-463f-8cdc-f592232d48eb",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "CONFIRMADA",
               "operator": {
@@ -160,7 +160,7 @@
       }
     },
     {
-      "id": "592b2e09-8eda-4813-8198-6f01d35af080",
+      "id": "6053edf1-4ca4-4304-b343-b118210bbc5a",
       "name": "Leer Recordatorios",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -178,7 +178,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1nPATKkTPoCgGg_OKXkpL2zMocqhYHXCj5KsL2RKo4n8"
+          "value": "1-G4iP-8h7KDujNw848JuS5a1sjhGQ7jL0S_4-7_cMT4"
         },
         "sheetName": {
           "__rl": true,
@@ -189,13 +189,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "e0a259bc-9f0d-406e-9f73-d40ecf50df8e",
+      "id": "db2b74ff-f3d6-4974-8475-90fc67f2acc9",
       "name": "Detectar eventos próximos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -208,7 +208,7 @@
       }
     },
     {
-      "id": "575b2d0f-f6fc-4f1e-9a80-091ecd9bf2f5",
+      "id": "61679013-bd3b-4030-a9ee-443ec3d92039",
       "name": "Sin recordatorio previo",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -226,7 +226,7 @@
           },
           "conditions": [
             {
-              "id": "0a229555-d143-4b01-8f20-aadc49d36aac",
+              "id": "4d74e338-0965-4f23-82e2-6843a7e4bdcf",
               "leftValue": "={{ $json.duplicado }}",
               "rightValue": "",
               "operator": {
@@ -242,7 +242,7 @@
       }
     },
     {
-      "id": "8a407812-edd9-497e-9c33-68b7deb19bea",
+      "id": "a4c3283c-2b13-4015-adcc-442677324ffe",
       "name": "Preparar notificación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -255,7 +255,7 @@
       }
     },
     {
-      "id": "50d03528-0b3d-4556-93bb-e3f49fa122a9",
+      "id": "ba3107be-3bde-4e68-9d8a-5b0eecbc9df0",
       "name": "Notificar (WF09)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -268,7 +268,7 @@
         "workflowId": {
           "__rl": true,
           "mode": "id",
-          "value": "NRT3LHofBWlOl8Sq"
+          "value": "sIvD9W9vGFegdxp8"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -285,7 +285,7 @@
       }
     },
     {
-      "id": "24d1b114-32ac-4e13-927f-6378ce99615b",
+      "id": "891b9d90-6815-44d4-a8a0-c35df9fbe578",
       "name": "Fila de recordatorio",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -298,7 +298,7 @@
       }
     },
     {
-      "id": "aa877b6f-d0c1-4892-a442-a54fb165a42f",
+      "id": "d71fbfcb-149d-42b4-acff-201bbb5cb536",
       "name": "Registrar recordatorio",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -314,7 +314,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1nPATKkTPoCgGg_OKXkpL2zMocqhYHXCj5KsL2RKo4n8"
+          "value": "1-G4iP-8h7KDujNw848JuS5a1sjhGQ7jL0S_4-7_cMT4"
         },
         "sheetName": {
           "__rl": true,
@@ -334,7 +334,7 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
@@ -471,6 +471,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "NHgsHhxEkdNFEmog",
+  "id": "KqcZwO3EQVycBNmH",
   "tags": []
 }

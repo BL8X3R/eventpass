@@ -2,7 +2,7 @@
   "name": "WF04 — Administración CRUD de eventos",
   "nodes": [
     {
-      "id": "7e904d5e-f207-4ca7-aa3c-bd6d3979ac51",
+      "id": "0811e5be-a917-4662-b391-f290ac2ba087",
       "name": "Formulario de administración",
       "webhookId": "9a13ff7a-8fef-4589-abef-7ed06d0e79be",
       "type": "n8n-nodes-base.formTrigger",
@@ -128,13 +128,13 @@
       },
       "credentials": {
         "httpBasicAuth": {
-          "id": "uDZUf0jvVoA0go27",
-          "name": "Unnamed credential"
+          "id": "eg1ZGtWNaXm9kYdc",
+          "name": "Admin EventPass"
         }
       }
     },
     {
-      "id": "9bd9f903-8764-4bbb-af5e-ea8ff99123c7",
+      "id": "420b160b-6bdc-4c71-a355-4a3502b3d5ef",
       "name": "Leer Eventos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -152,7 +152,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -163,13 +163,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "6661a849-1f67-4a03-adfb-c129a03d8d0f",
+      "id": "cc2e8c3c-eb0d-4776-8c5e-7d338ca15c1b",
       "name": "Leer Inscripciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -187,7 +187,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -198,13 +198,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "12a99061-812f-4ffb-9963-57a293316182",
+      "id": "3aaaeabb-8d32-4234-804b-96855d4c8150",
       "name": "Validar formulario",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -217,7 +217,7 @@
       }
     },
     {
-      "id": "5e59fb34-bc22-45d0-9456-75925e401688",
+      "id": "f52ea1f8-81a3-471c-82e7-a5ffba96861a",
       "name": "Según acción",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -238,7 +238,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "97aa57d2-d689-4f84-a92e-eed2b5450907",
+                    "id": "d1664e0f-bc2f-4823-bb6c-59b1430d9493",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "crear",
                     "operator": {
@@ -262,7 +262,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "a720e310-8bdc-4d3f-bb88-cb613d8de511",
+                    "id": "d6701675-1d2a-49f1-a572-2c23140b477f",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "consultar",
                     "operator": {
@@ -286,7 +286,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "50f7591b-1724-4a83-b4a6-01216f39b5e3",
+                    "id": "edcfd33e-2754-42e5-bd2d-9e494490dd62",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "actualizar",
                     "operator": {
@@ -310,7 +310,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "f63c458f-2740-4f63-9b70-686429a34040",
+                    "id": "e248689a-13f1-43cc-8e19-6ad40d4ad275",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "estado",
                     "operator": {
@@ -334,7 +334,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "621d6dac-5ac1-4091-90b9-30c16900ba64",
+                    "id": "6cb45fc0-e059-4065-b4f4-5ee0d89c1a83",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "error",
                     "operator": {
@@ -354,7 +354,7 @@
       }
     },
     {
-      "id": "376e78fc-daa5-4cc3-9c0d-4a00f03a4b3b",
+      "id": "66b0e634-b044-4c12-b7b6-a395c327024a",
       "name": "Generar evento_id",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -367,7 +367,7 @@
       }
     },
     {
-      "id": "92a82b0b-d62d-447f-a0a8-bbbfa21087a7",
+      "id": "08b69c78-b82f-4f24-8c18-2144b3d822ec",
       "name": "Crear evento",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -383,7 +383,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -403,13 +403,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "b5492207-71a7-4a8f-b9cc-f64f9d2fbcac",
+      "id": "c2793ac6-155e-4b5d-9ae5-cee42a626d78",
       "name": "Buscar evento por ID",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -418,11 +418,11 @@
         160
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst e = $('Validar formulario').first().json.evento;\nconst confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;\nreturn ok(200, { ...e, inscritos_confirmados: confirmadas }, 'Evento encontrado.', { _auditoria: { evento_id: e.evento_id, accion: 'CONSULTAR', resultado: 'OK', detalle: '' } });\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst e = $('Validar formulario').first().json.evento;\nconst confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;\nreturn ok(200, { ...e, inscritos_confirmados: confirmadas }, 'Evento encontrado.', { _auditoria: { evento_id: e.evento_id, accion: 'CONSULTAR', resultado: 'OK', detalle: '' } });\n"
       }
     },
     {
-      "id": "1b04077e-a711-4ab4-a72d-0c1bae6af563",
+      "id": "27c0ecb1-125a-4671-a1d2-25715a3cbf42",
       "name": "Preparar actualización",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -431,11 +431,11 @@
         320
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar formulario').first().json;\nconst e = v.evento;\nconst audit = (resultado, detalle) => ({ _auditoria: { evento_id: e.evento_id, accion: 'ACTUALIZAR', resultado, detalle } });\nif (['CANCELADO'].includes(e.estado)) return fallo(409, 'EVENTO_CANCELADO', 'Un evento cancelado no se puede editar.', { aplicar: false, ...audit('ERROR', 'Evento cancelado') });\nconst cambios = Object.fromEntries(Object.entries(v.datos).filter(([k, val]) => String(e[k] ?? '') !== String(val)));\nif (!Object.keys(cambios).length) return fallo(400, 'SIN_CAMBIOS', 'No escribiste ningún dato distinto al actual.', { aplicar: false, ...audit('ERROR', 'Sin cambios') });\nif (cambios.capacidad) {\n  const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;\n  if (Number(cambios.capacidad) < confirmadas) return fallo(409, 'CAPACIDAD_INSUFICIENTE', 'Hay ' + confirmadas + ' inscripciones confirmadas; la capacidad no puede ser menor.', { aplicar: false, ...audit('ERROR', 'Capacidad menor a confirmadas') });\n}\nconst fila = { evento_id: e.evento_id, ...cambios, fecha_actualizacion: ahora.toISOString() };\nconst relevante = ['fecha', 'hora', 'lugar'].some((k) => k in cambios);\nreturn [{ json: { ...fila, aplicar: true, _status: 200, _body: { ok: true, mensaje: 'Evento ' + e.evento_id + ' actualizado: ' + Object.keys(cambios).join(', ') + '.', data: { ...e, ...fila } },\n  ...audit('OK', 'Campos: ' + Object.keys(cambios).join(', ')),\n  _notificacion: relevante ? { evento: { ...e, ...cambios }, tipo: 'EVENTO_ACTUALIZADO', titulo: 'Cambió la información de ' + e.nombre, mensaje: 'El evento ' + e.nombre + ' cambió de ' + Object.keys(cambios).filter((k) => ['fecha', 'hora', 'lugar'].includes(k)).join(', ') + '. Ahora es el ' + (cambios.fecha || e.fecha) + ' a las ' + (cambios.hora || e.hora) + ' en ' + (cambios.lugar || e.lugar) + '.' } : null } }];\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst v = $('Validar formulario').first().json;\nconst e = v.evento;\nconst audit = (resultado, detalle) => ({ _auditoria: { evento_id: e.evento_id, accion: 'ACTUALIZAR', resultado, detalle } });\nif (['CANCELADO'].includes(e.estado)) return fallo(409, 'EVENTO_CANCELADO', 'Un evento cancelado no se puede editar.', { aplicar: false, ...audit('ERROR', 'Evento cancelado') });\nconst cambios = Object.fromEntries(Object.entries(v.datos).filter(([k, val]) => String(e[k] ?? '') !== String(val)));\nif (!Object.keys(cambios).length) return fallo(400, 'SIN_CAMBIOS', 'No escribiste ningún dato distinto al actual.', { aplicar: false, ...audit('ERROR', 'Sin cambios') });\nif (cambios.capacidad) {\n  const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;\n  if (Number(cambios.capacidad) < confirmadas) return fallo(409, 'CAPACIDAD_INSUFICIENTE', 'Hay ' + confirmadas + ' inscripciones confirmadas; la capacidad no puede ser menor.', { aplicar: false, ...audit('ERROR', 'Capacidad menor a confirmadas') });\n}\nconst fila = { evento_id: e.evento_id, ...cambios, fecha_actualizacion: ahora.toISOString() };\nconst relevante = ['fecha', 'hora', 'lugar'].some((k) => k in cambios);\nreturn [{ json: { ...fila, aplicar: true, _status: 200, _body: { ok: true, mensaje: 'Evento ' + e.evento_id + ' actualizado: ' + Object.keys(cambios).join(', ') + '.', data: { ...e, ...fila } },\n  ...audit('OK', 'Campos: ' + Object.keys(cambios).join(', ')),\n  _notificacion: relevante ? { evento: { ...e, ...cambios }, tipo: 'EVENTO_ACTUALIZADO', titulo: 'Cambió la información de ' + e.nombre, mensaje: 'El evento ' + e.nombre + ' cambió de ' + Object.keys(cambios).filter((k) => ['fecha', 'hora', 'lugar'].includes(k)).join(', ') + '. Ahora es el ' + (cambios.fecha || e.fecha) + ' a las ' + (cambios.hora || e.hora) + ' en ' + (cambios.lugar || e.lugar) + '.' } : null } }];\n"
       }
     },
     {
-      "id": "9d8310b1-262a-4b19-b353-ba864f9b0f11",
+      "id": "228d6ab6-5126-4ee9-b9e0-6ef099cd2422",
       "name": "Validar cambio de estado",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -448,7 +448,7 @@
       }
     },
     {
-      "id": "056be37e-9456-4422-a464-5808b8143829",
+      "id": "3678c437-6a31-4d33-a04f-e61a5b61b459",
       "name": "¿Aplicar cambios?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -466,7 +466,7 @@
           },
           "conditions": [
             {
-              "id": "42a16532-62c3-43a2-ab5d-b86c8ade3d21",
+              "id": "ccb4d24b-3fff-4b67-8837-ebc22fbc28ef",
               "leftValue": "={{ $json.aplicar }}",
               "rightValue": "",
               "operator": {
@@ -482,7 +482,7 @@
       }
     },
     {
-      "id": "89dc4075-2943-4243-bb03-affe9cdefa83",
+      "id": "84b12e50-c6d3-4d69-a519-a723165f2fcd",
       "name": "Actualizar evento",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -498,7 +498,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -520,13 +520,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "0cab3227-a146-441b-aa1e-13413a3d8bc0",
+      "id": "77cd9d38-847b-4e2b-84ba-9499ac0d889e",
       "name": "Armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -539,7 +539,7 @@
       }
     },
     {
-      "id": "9beaf375-7522-491d-92ec-dcd8cc7e8fde",
+      "id": "92c4909e-3b1f-4079-a1f1-fcc893370111",
       "name": "Fila de auditoría",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -552,7 +552,7 @@
       }
     },
     {
-      "id": "11b23d3d-359e-42fc-bdd4-8d39751d7627",
+      "id": "7ba0eb0f-7623-4a2c-886a-0865ab1ff8d3",
       "name": "Registrar auditoría",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -568,7 +568,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -588,13 +588,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "7191b251-2af3-42a2-8dd5-424cf4f8e16f",
+      "id": "811d562a-f4e7-4cbd-a17f-ed925e4619cf",
       "name": "Mostrar resultado",
       "type": "n8n-nodes-base.form",
       "typeVersion": 1,
@@ -609,10 +609,10 @@
         "completionMessage": "={{ (() => { const b = $('Armar respuesta').first().json._body; if (!b.ok) return b.error.mensaje; const d = b.data || {}; return b.mensaje + (d.evento_id ? '\\n\\n' + ['ID: ' + d.evento_id, 'Nombre: ' + d.nombre, 'Categoría: ' + d.categoria, 'Fecha: ' + d.fecha + ' ' + d.hora, 'Lugar: ' + d.lugar, 'Capacidad: ' + d.capacidad, 'Estado: ' + d.estado].concat(d.inscritos_confirmados !== undefined ? ['Confirmadas: ' + d.inscritos_confirmados] : []).join('\\n') : ''); })() }}",
         "options": {}
       },
-      "webhookId": "99845fb2-65b3-4e89-a641-69f474b4211b"
+      "webhookId": "e9887cd4-a600-4c75-bd0b-647ae0ad18a2"
     },
     {
-      "id": "faf9df41-b40b-4aa7-b9b5-279692427bc0",
+      "id": "fdb85951-48bf-482b-abf7-96644cf28c43",
       "name": "Inscritos a notificar",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -621,11 +621,11 @@
         640
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst n = $('Armar respuesta').first().json._notificacion;\nif (!n || !$('Actualizar evento').isExecuted) return [];\nreturn filas('Leer Inscripciones', 'inscripcion_id')\n  .filter((i) => i.evento_id === n.evento.evento_id && ['CONFIRMADA', 'LISTA_ESPERA'].includes(i.estado))\n  .map((i) => ({ json: { usuario_id: i.usuario_id, tipo: n.tipo, titulo: n.titulo, mensaje: n.mensaje, evento_id: n.evento.evento_id, inscripcion_id: i.inscripcion_id, clave_idempotencia: n.tipo + '|' + i.inscripcion_id + '|' + ahora.toISOString().slice(0, 16) } }));\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst n = $('Armar respuesta').first().json._notificacion;\nif (!n || !$('Actualizar evento').isExecuted) return [];\nreturn filas('Leer Inscripciones', 'inscripcion_id')\n  .filter((i) => i.evento_id === n.evento.evento_id && ['CONFIRMADA', 'LISTA_ESPERA', 'ASISTIO'].includes(i.estado))\n  .map((i) => ({ json: { usuario_id: i.usuario_id, tipo: n.tipo, titulo: n.titulo, mensaje: n.mensaje, evento_id: n.evento.evento_id, inscripcion_id: i.inscripcion_id, clave_idempotencia: n.tipo + '|' + i.inscripcion_id + '|' + ahora.toISOString().slice(0, 16) } }));\n"
       }
     },
     {
-      "id": "9b739762-7026-4e70-8aa6-6e3f9e0da5df",
+      "id": "203766b6-94f9-49fb-a67c-46e85a89b09d",
       "name": "Notificar inscritos (WF09)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -638,7 +638,7 @@
         "workflowId": {
           "__rl": true,
           "mode": "id",
-          "value": "NRT3LHofBWlOl8Sq"
+          "value": "sIvD9W9vGFegdxp8"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -881,6 +881,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "zIHMLT4GE8JIKxzN",
+  "id": "6l8FqyIzn0haNxa4",
   "tags": []
 }

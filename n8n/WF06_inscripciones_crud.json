@@ -2,7 +2,7 @@
   "name": "WF06 — Inscripciones CRUD",
   "nodes": [
     {
-      "id": "dff8c605-f0df-468e-a271-1926eccd6883",
+      "id": "cf933a95-d3da-4b40-aa35-8bb3a9d8fc0b",
       "name": "Webhook Inscripciones",
       "webhookId": "526330c3-80fd-4984-a5ae-425e0c008a86",
       "type": "n8n-nodes-base.webhook",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "89970457-6a0b-4f1d-9606-46b9f19d42f9",
+      "id": "abadc03b-eec2-4bf5-8216-dc00fccb29e5",
       "name": "Leer Sesiones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -39,7 +39,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1cL0jtBSJh3jZ_FTnb1G-_RY6ionLEIqTzIijympAv_I"
+          "value": "15UVito5OS_VdROQnvWjzWrxqoyXUjv4NHMTRlwWdG0w"
         },
         "sheetName": {
           "__rl": true,
@@ -50,13 +50,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "06b567ee-905a-4fa5-9dd3-77f81cc83c08",
+      "id": "cca23092-edf3-4d4b-864a-c11210d021ca",
       "name": "Leer Usuarios",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -74,7 +74,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1_U8zzZ5-yC8v_10LTuDIYqPuTcw0yFtAEPg2OQ82Tn0"
+          "value": "1tD1HcwTZ8ZL7E6CP2U9VDtergclcdbPzA1m82PwUdt4"
         },
         "sheetName": {
           "__rl": true,
@@ -85,13 +85,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "ab18cd52-8f6b-4431-beff-bbc4a831a4b0",
+      "id": "e5bfeaa4-67b2-4b0b-b829-051efacf7227",
       "name": "Leer Vinculaciones Telegram",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -109,7 +109,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14D0JYWajBwdTOsuTl5q3MGO18rthWSFPZFpAkYNvnz8"
+          "value": "1Ho4gVKLaHx7zDbdaQEmpzFvJrTPMsE14vA1sA-UO5dc"
         },
         "sheetName": {
           "__rl": true,
@@ -120,13 +120,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "d923be59-a381-427f-be04-07a43af10d55",
+      "id": "9bff6133-4641-4b21-a672-c797aab1b742",
       "name": "Leer Eventos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -144,7 +144,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -155,13 +155,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "1034c933-eb73-4bb4-a98b-ef55c86ecb94",
+      "id": "2cfb35fd-c0b8-45e4-b27e-1088d3a09f46",
       "name": "Leer Inscripciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -179,7 +179,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -190,13 +190,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "ad04ec76-1807-48b5-8ae8-a1e2e253b96a",
+      "id": "87cdb461-3926-4742-9db2-466a8740f2c6",
       "name": "Validar sesión y solicitud",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -209,7 +209,7 @@
       }
     },
     {
-      "id": "6f844cfa-896f-43b3-95d0-8b95e675c259",
+      "id": "633cca6e-0c8d-4e3c-944c-f42a4c207548",
       "name": "Según operación",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -230,7 +230,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "8464c984-70c5-4c94-aaf1-0f3621372570",
+                    "id": "de5ad2a0-de69-415b-a41a-36a47e41baf6",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "crear",
                     "operator": {
@@ -254,7 +254,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "f748bce8-a3a3-4c85-bc03-cc1097913b65",
+                    "id": "e984c2aa-f611-421a-869b-ca326e11cd0c",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "mis_inscripciones",
                     "operator": {
@@ -278,7 +278,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "fc25a937-854d-4cb8-9d2a-088f02b82243",
+                    "id": "45ae9415-7721-4868-bdd4-3d1151a831de",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "actualizar",
                     "operator": {
@@ -302,7 +302,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "c323f3c9-a2c2-42e5-affe-616d228e1829",
+                    "id": "485f8b51-6940-424a-bcc9-e04133cad4e4",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "cancelar",
                     "operator": {
@@ -326,7 +326,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "9061003e-cd98-4cd8-af9e-7ad7f39b25a1",
+                    "id": "736f821b-fc8a-4621-a882-484ec582f620",
                     "leftValue": "={{ $json.ruta }}",
                     "rightValue": "error",
                     "operator": {
@@ -346,7 +346,7 @@
       }
     },
     {
-      "id": "44c92854-b903-4f60-b89f-3426830265f3",
+      "id": "5fec067b-a76b-49f7-941f-3187d3085426",
       "name": "Validar evento, Telegram y duplicado",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -355,11 +355,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst evento_id = String(b.evento_id || '').trim().toUpperCase();\nconst audit = (resultado, detalle, extra = {}) => ({ _auditoria: { inscripcion_id: '', usuario_id: u.usuario_id, evento_id, accion: 'CREAR', estado_anterior: '', estado_nuevo: '', resultado, detalle, ...extra } });\nconst no = (status, codigo, mensaje) => fallo(status, codigo, mensaje, { puede: false, ...audit('ERROR', codigo) });\n\nconst vinculado = filas('Leer Vinculaciones Telegram', 'vinculacion_id').some((x) => x.usuario_id === u.usuario_id && x.estado === 'ACTIVA');\nif (!vinculado) return no(412, 'TELEGRAM_NO_VINCULADO', 'Vincula tu Telegram en Mi cuenta antes de inscribirte. Así te avisamos de cupos y recordatorios.');\nconst e = filas('Leer Eventos', 'evento_id').find((x) => String(x.evento_id).toUpperCase() === evento_id);\nif (!e) return no(404, 'EVENTO_NO_ENCONTRADO', 'Ese evento no existe.');\nif (e.estado !== 'PUBLICADO') return no(409, 'EVENTO_NO_DISPONIBLE', 'Este evento está ' + String(e.estado).toLowerCase() + ' y no recibe inscripciones.');\nif (fechaEvento(e) <= ahora) return no(409, 'EVENTO_FINALIZADO', 'Este evento ya empezó o terminó.');\n\n// Idempotencia: usuario_id + evento_id no puede tener dos inscripciones activas.\nconst activa = filas('Leer Inscripciones', 'inscripcion_id').find((i) => i.usuario_id === u.usuario_id && i.evento_id === e.evento_id && ['CONFIRMADA', 'LISTA_ESPERA'].includes(i.estado));\nif (activa) return ok(200, { inscripcion: sinFila(activa), ya_existia: true }, activa.estado === 'CONFIRMADA' ? 'Ya tienes tu cupo confirmado en este evento.' : 'Ya estás en la lista de espera de este evento.', { puede: false, ...audit('OMITIDO', 'Inscripción activa existente (idempotencia)', { inscripcion_id: activa.inscripcion_id, estado_anterior: activa.estado, estado_nuevo: activa.estado }) });\nreturn [{ json: { puede: true, evento: sinFila(e) } }];\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst evento_id = String(b.evento_id || '').trim().toUpperCase();\nconst audit = (resultado, detalle, extra = {}) => ({ _auditoria: { inscripcion_id: '', usuario_id: u.usuario_id, evento_id, accion: 'CREAR', estado_anterior: '', estado_nuevo: '', resultado, detalle, ...extra } });\nconst no = (status, codigo, mensaje) => fallo(status, codigo, mensaje, { puede: false, ...audit('ERROR', codigo) });\n\nconst vinculado = filas('Leer Vinculaciones Telegram', 'vinculacion_id').some((x) => x.usuario_id === u.usuario_id && x.estado === 'ACTIVA');\nif (!vinculado) return no(412, 'TELEGRAM_NO_VINCULADO', 'Vincula tu Telegram en Mi cuenta antes de inscribirte. Así te avisamos de cupos y recordatorios.');\nconst e = filas('Leer Eventos', 'evento_id').find((x) => String(x.evento_id).toUpperCase() === evento_id);\nif (!e) return no(404, 'EVENTO_NO_ENCONTRADO', 'Ese evento no existe.');\nif (e.estado !== 'PUBLICADO') return no(409, 'EVENTO_NO_DISPONIBLE', 'Este evento está ' + String(e.estado).toLowerCase() + ' y no recibe inscripciones.');\nif (fechaEvento(e) <= ahora) return no(409, 'EVENTO_FINALIZADO', 'Este evento ya empezó o terminó.');\n\n// Idempotencia: usuario_id + evento_id no puede tener dos inscripciones activas.\nconst activa = filas('Leer Inscripciones', 'inscripcion_id').find((i) => i.usuario_id === u.usuario_id && i.evento_id === e.evento_id && ['CONFIRMADA', 'LISTA_ESPERA', 'ASISTIO'].includes(i.estado));\nif (activa) return ok(200, { inscripcion: sinFila(activa), ya_existia: true }, activa.estado === 'CONFIRMADA' ? 'Ya tienes tu cupo confirmado en este evento.' : activa.estado === 'ASISTIO' ? 'Ya registraste tu ingreso a este evento.' : 'Ya estás en la lista de espera de este evento.', { puede: false, ...audit('OMITIDO', 'Inscripción activa existente (idempotencia)', { inscripcion_id: activa.inscripcion_id, estado_anterior: activa.estado, estado_nuevo: activa.estado }) });\nreturn [{ json: { puede: true, evento: sinFila(e) } }];\n"
       }
     },
     {
-      "id": "89540c73-28c0-42ac-ad43-96f4b54f3ffa",
+      "id": "ef5845bc-a7d4-4f70-91ff-3f8ec596f714",
       "name": "¿Puede inscribirse?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -377,7 +377,7 @@
           },
           "conditions": [
             {
-              "id": "98dce1c4-27e8-4166-a695-1dbc37fcd599",
+              "id": "049a6e85-1287-4081-a792-9f38833a5548",
               "leftValue": "={{ $json.puede }}",
               "rightValue": "",
               "operator": {
@@ -393,7 +393,7 @@
       }
     },
     {
-      "id": "2c1c7d28-9afc-40b4-9625-426268a967ce",
+      "id": "452bb7f8-f32a-4de7-96e6-5a75770df112",
       "name": "Calcular cupos y asignar estado",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -402,11 +402,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst e = $('Validar evento, Telegram y duplicado').first().json.evento;\nconst delEvento = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id);\nconst confirmadas = delEvento.filter((i) => i.estado === 'CONFIRMADA').length;\nconst enEspera = delEvento.filter((i) => i.estado === 'LISTA_ESPERA').length;\nconst hayCupo = confirmadas < Number(e.capacidad);\nconst estado = hayCupo ? 'CONFIRMADA' : 'LISTA_ESPERA';\nconst fecha = ahora.toISOString();\nconst fila = {\n  inscripcion_id: genId('INS'), usuario_id: u.usuario_id, evento_id: e.evento_id, estado,\n  fecha_inscripcion: fecha, fecha_actualizacion: fecha,\n  nombre_acreditacion: String(b.nombre_acreditacion || u.nombre).trim().slice(0, 80),\n  observaciones: String(b.observaciones || '').trim().slice(0, 300),\n  origen: 'WEB', orden_espera: hayCupo ? '' : String(enEspera + 1),\n};\nconst titulo = hayCupo ? 'Cupo confirmado: ' + e.nombre : 'Estás en lista de espera: ' + e.nombre;\nconst mensaje = hayCupo\n  ? 'Tu cupo para ' + e.nombre + ' está confirmado. Te esperamos el ' + e.fecha + ' a las ' + e.hora + ' en ' + e.lugar + '.'\n  : 'El evento ' + e.nombre + ' está lleno. Quedaste en la posición ' + fila.orden_espera + ' de la lista de espera; si se libera un cupo te lo asignamos automáticamente y te avisamos.';\nreturn [{ json: { ...fila, _status: 201,\n  _body: { ok: true, mensaje: hayCupo ? 'Inscripción confirmada.' : 'El evento está lleno: quedaste en lista de espera (posición ' + fila.orden_espera + ').', data: { inscripcion: fila, cupos_restantes: Math.max(Number(e.capacidad) - confirmadas - (hayCupo ? 1 : 0), 0) } },\n  _auditoria: { inscripcion_id: fila.inscripcion_id, usuario_id: u.usuario_id, evento_id: e.evento_id, accion: 'CREAR', estado_anterior: '', estado_nuevo: estado, resultado: 'OK', detalle: hayCupo ? 'Cupo disponible' : 'Sin cupo: lista de espera' },\n  _notificacion: { usuario_id: u.usuario_id, tipo: hayCupo ? 'INSCRIPCION_CONFIRMADA' : 'LISTA_ESPERA', titulo, mensaje, evento_id: e.evento_id, inscripcion_id: fila.inscripcion_id } } }];\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst e = $('Validar evento, Telegram y duplicado').first().json.evento;\nconst delEvento = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id);\nconst confirmadas = delEvento.filter((i) => ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;\nconst enEspera = delEvento.filter((i) => i.estado === 'LISTA_ESPERA').length;\nconst hayCupo = confirmadas < Number(e.capacidad);\nconst estado = hayCupo ? 'CONFIRMADA' : 'LISTA_ESPERA';\nconst fecha = ahora.toISOString();\nconst fila = {\n  inscripcion_id: genId('INS'), usuario_id: u.usuario_id, evento_id: e.evento_id, estado,\n  fecha_inscripcion: fecha, fecha_actualizacion: fecha,\n  nombre_acreditacion: String(b.nombre_acreditacion || u.nombre).trim().slice(0, 80),\n  observaciones: String(b.observaciones || '').trim().slice(0, 300),\n  origen: 'WEB', orden_espera: hayCupo ? '' : String(enEspera + 1),\n};\nconst titulo = hayCupo ? 'Cupo confirmado: ' + e.nombre : 'Estás en lista de espera: ' + e.nombre;\nconst mensaje = hayCupo\n  ? 'Tu cupo para ' + e.nombre + ' está confirmado. Te esperamos el ' + e.fecha + ' a las ' + e.hora + ' en ' + e.lugar + '.'\n  : 'El evento ' + e.nombre + ' está lleno. Quedaste en la posición ' + fila.orden_espera + ' de la lista de espera; si se libera un cupo te lo asignamos automáticamente y te avisamos.';\nreturn [{ json: { ...fila, _status: 201,\n  _body: { ok: true, mensaje: hayCupo ? 'Inscripción confirmada.' : 'El evento está lleno: quedaste en lista de espera (posición ' + fila.orden_espera + ').', data: { inscripcion: fila, cupos_restantes: Math.max(Number(e.capacidad) - confirmadas - (hayCupo ? 1 : 0), 0) } },\n  _auditoria: { inscripcion_id: fila.inscripcion_id, usuario_id: u.usuario_id, evento_id: e.evento_id, accion: 'CREAR', estado_anterior: '', estado_nuevo: estado, resultado: 'OK', detalle: hayCupo ? 'Cupo disponible' : 'Sin cupo: lista de espera' },\n  _notificacion: { usuario_id: u.usuario_id, tipo: hayCupo ? 'INSCRIPCION_CONFIRMADA' : 'LISTA_ESPERA', titulo, mensaje, evento_id: e.evento_id, inscripcion_id: fila.inscripcion_id } } }];\n"
       }
     },
     {
-      "id": "8594fc5f-1a6b-4fb8-bb3e-65ebc5a9ce07",
+      "id": "c74d4298-40d9-4d7c-b360-9c94d44f78a1",
       "name": "Guardar inscripción",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -422,7 +422,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -442,13 +442,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "908401d1-9e26-480a-9fa0-d3204d22f7a0",
+      "id": "1d4de98d-ffe9-4bec-a3fe-8d2ba7d5af7e",
       "name": "Listar inscripciones del usuario",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -461,7 +461,7 @@
       }
     },
     {
-      "id": "27b97ec3-e24d-4747-996f-ffafac592792",
+      "id": "0669a851-8049-48ab-b449-f926198e6a7d",
       "name": "Preparar actualización",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -474,7 +474,7 @@
       }
     },
     {
-      "id": "e99d2844-87af-4fde-8587-3b9a6f1dfcc2",
+      "id": "d3cfea2c-c9e7-476a-9936-6769bfe3c6cf",
       "name": "Preparar cancelación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -483,11 +483,11 @@
         480
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst i = filas('Leer Inscripciones', 'inscripcion_id').find((x) => x.inscripcion_id === String(b.inscripcion_id || '') && x.usuario_id === u.usuario_id);\nif (!i) return fallo(404, 'INSCRIPCION_NO_ENCONTRADA', 'No encontramos esa inscripción en tu cuenta.', { aplicar: false });\nconst e = filas('Leer Eventos', 'evento_id').find((x) => x.evento_id === i.evento_id) || {};\nconst audit = (resultado, detalle) => ({ _auditoria: { inscripcion_id: i.inscripcion_id, usuario_id: u.usuario_id, evento_id: i.evento_id, accion: 'CANCELAR', estado_anterior: i.estado, estado_nuevo: resultado === 'OK' ? 'CANCELADA' : i.estado, resultado, detalle } });\nif (i.estado === 'CANCELADA') return ok(200, { inscripcion: sinFila(i), ya_existia: true }, 'Esta inscripción ya estaba cancelada.', { aplicar: false, ...audit('OMITIDO', 'Ya cancelada (idempotencia)') });\nif (e.evento_id && fechaEvento(e) <= ahora) return fallo(409, 'EVENTO_FINALIZADO', 'El evento ya empezó; la inscripción no se puede cancelar.', { aplicar: false, ...audit('ERROR', 'Evento iniciado') });\nconst fila = { inscripcion_id: i.inscripcion_id, estado: 'CANCELADA', orden_espera: '', fecha_actualizacion: ahora.toISOString() };\nconst liberaCupo = i.estado === 'CONFIRMADA';\nreturn [{ json: { ...fila, aplicar: true, _status: 200,\n  _body: { ok: true, mensaje: liberaCupo ? 'Inscripción cancelada. Tu cupo pasará a la siguiente persona en lista de espera.' : 'Saliste de la lista de espera.', data: { inscripcion: { ...sinFila(i), ...fila } } },\n  ...audit('OK', liberaCupo ? 'Libera cupo confirmado' : 'Sale de lista de espera'),\n  _notificacion: { usuario_id: u.usuario_id, tipo: 'INSCRIPCION_CANCELADA', titulo: 'Cancelaste tu inscripción: ' + (e.nombre || i.evento_id), mensaje: 'Tu inscripción a ' + (e.nombre || i.evento_id) + ' quedó cancelada. Si fue un error, puedes inscribirte de nuevo mientras haya cupo o lista de espera.', evento_id: i.evento_id, inscripcion_id: i.inscripcion_id } } }];\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\nconst { usuario: u, body: b } = $('Validar sesión y solicitud').first().json;\nconst i = filas('Leer Inscripciones', 'inscripcion_id').find((x) => x.inscripcion_id === String(b.inscripcion_id || '') && x.usuario_id === u.usuario_id);\nif (!i) return fallo(404, 'INSCRIPCION_NO_ENCONTRADA', 'No encontramos esa inscripción en tu cuenta.', { aplicar: false });\nconst e = filas('Leer Eventos', 'evento_id').find((x) => x.evento_id === i.evento_id) || {};\nconst audit = (resultado, detalle) => ({ _auditoria: { inscripcion_id: i.inscripcion_id, usuario_id: u.usuario_id, evento_id: i.evento_id, accion: 'CANCELAR', estado_anterior: i.estado, estado_nuevo: resultado === 'OK' ? 'CANCELADA' : i.estado, resultado, detalle } });\nif (i.estado === 'CANCELADA') return ok(200, { inscripcion: sinFila(i), ya_existia: true }, 'Esta inscripción ya estaba cancelada.', { aplicar: false, ...audit('OMITIDO', 'Ya cancelada (idempotencia)') });\nif (i.estado === 'ASISTIO') return fallo(409, 'INSCRIPCION_CON_ASISTENCIA', 'Ya registraste tu ingreso a este evento; la inscripción no se puede cancelar.', { aplicar: false, ...audit('ERROR', 'Asistencia registrada') });\nif (e.evento_id && fechaEvento(e) <= ahora) return fallo(409, 'EVENTO_FINALIZADO', 'El evento ya empezó; la inscripción no se puede cancelar.', { aplicar: false, ...audit('ERROR', 'Evento iniciado') });\nconst fila = { inscripcion_id: i.inscripcion_id, estado: 'CANCELADA', orden_espera: '', fecha_actualizacion: ahora.toISOString() };\nconst liberaCupo = i.estado === 'CONFIRMADA';\nreturn [{ json: { ...fila, aplicar: true, _status: 200,\n  _body: { ok: true, mensaje: liberaCupo ? 'Inscripción cancelada. Tu cupo pasará a la siguiente persona en lista de espera.' : 'Saliste de la lista de espera.', data: { inscripcion: { ...sinFila(i), ...fila } } },\n  ...audit('OK', liberaCupo ? 'Libera cupo confirmado' : 'Sale de lista de espera'),\n  _notificacion: { usuario_id: u.usuario_id, tipo: 'INSCRIPCION_CANCELADA', titulo: 'Cancelaste tu inscripción: ' + (e.nombre || i.evento_id), mensaje: 'Tu inscripción a ' + (e.nombre || i.evento_id) + ' quedó cancelada. Si fue un error, puedes inscribirte de nuevo mientras haya cupo o lista de espera.', evento_id: i.evento_id, inscripcion_id: i.inscripcion_id } } }];\n"
       }
     },
     {
-      "id": "6efdb3ee-e4df-4988-8d9c-c0c3def87018",
+      "id": "729567ca-7d4d-400f-a953-d4d4afdc1401",
       "name": "¿Aplicar cambios?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -505,7 +505,7 @@
           },
           "conditions": [
             {
-              "id": "0a0abb27-7bae-45fd-be43-8e0352513a6e",
+              "id": "6cd2056c-ab0a-48a9-83bc-01cf4beb91ff",
               "leftValue": "={{ $json.aplicar }}",
               "rightValue": "",
               "operator": {
@@ -521,7 +521,7 @@
       }
     },
     {
-      "id": "e05e8c1f-c02d-4a97-b1a4-93be6478b6ed",
+      "id": "16c18caf-9b0e-42a6-a8cc-f4dc3f56a3fa",
       "name": "Actualizar inscripción",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -537,7 +537,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -559,13 +559,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "c0a7c500-ca19-46be-b3e2-3db4b23d3d99",
+      "id": "7e05ce04-8733-4f34-a98c-b3eb8a2d56f9",
       "name": "Armar respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -578,7 +578,7 @@
       }
     },
     {
-      "id": "fcc87547-56a1-40f3-ba68-4745f61326e0",
+      "id": "448c9437-48d4-4728-87de-a0a35659c8b5",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -595,7 +595,7 @@
       }
     },
     {
-      "id": "ae4eb308-7e38-4d09-ba43-2e6b77855ae4",
+      "id": "14ca1da5-8081-432f-acf5-56b42d3cc4dd",
       "name": "Fila de auditoría",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -608,7 +608,7 @@
       }
     },
     {
-      "id": "a188e0eb-297e-4802-a9da-7e978002577e",
+      "id": "3fbff8b3-b0e6-4a9a-b54c-3517a812ec3a",
       "name": "Registrar auditoría",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -624,7 +624,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -644,13 +644,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "4d3b9f98-c6cd-4580-908c-622e92448c1c",
+      "id": "4b373ab0-8064-441e-90fb-dbded8016e3a",
       "name": "Preparar notificación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -663,7 +663,7 @@
       }
     },
     {
-      "id": "45a3d4cc-aaad-4e9c-8d2e-89d55e3567a5",
+      "id": "c1d22a72-4e74-439a-9bcd-40ab69087449",
       "name": "Notificar (WF09)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -676,7 +676,7 @@
         "workflowId": {
           "__rl": true,
           "mode": "id",
-          "value": "NRT3LHofBWlOl8Sq"
+          "value": "sIvD9W9vGFegdxp8"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -981,6 +981,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "RkYyFJE6ZKc3CVQo",
+  "id": "wSBtkHWaE7UUVxZc",
   "tags": []
 }

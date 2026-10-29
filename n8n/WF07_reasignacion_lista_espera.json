@@ -2,7 +2,7 @@
   "name": "WF07 — Reasignación automática de lista de espera",
   "nodes": [
     {
-      "id": "17252946-d415-4600-a9de-b383187de72b",
+      "id": "9aada009-c65f-4d00-9a73-4e6faabf3ec1",
       "name": "Cada 5 minutos",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "4b48c4b5-77f1-4093-86a5-6ea64c24f3cd",
+      "id": "42e797cc-fd6c-4a4b-8858-3c9b8e9e0cbd",
       "name": "Leer Eventos",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -40,7 +40,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1fZy0G1nvQW2D2onw_5NdyutZdno6WNt2DLp_P-sjYTI"
+          "value": "1QLHB48y_t1huntHh95TeFkmukiTSIsZLdgcAQYnQqOI"
         },
         "sheetName": {
           "__rl": true,
@@ -51,13 +51,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "7b535d63-2e04-425b-a208-220676e15da3",
+      "id": "f66c0cb9-2333-4e2b-ab16-af94752adaf5",
       "name": "Eventos PUBLICADOS",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -76,7 +76,7 @@
           },
           "conditions": [
             {
-              "id": "9cfb50d7-7e98-481a-947f-4f68bad3aa4c",
+              "id": "b5bfd572-5e37-46f1-a02f-3787b4264395",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "PUBLICADO",
               "operator": {
@@ -91,7 +91,7 @@
       }
     },
     {
-      "id": "79bb3b35-9611-4b57-bb18-0c4f302d2393",
+      "id": "3033c25a-e854-44db-9488-4f38d3016e9d",
       "name": "Leer Inscripciones",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -109,7 +109,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -120,13 +120,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "5f331f67-410c-4226-bbde-efb276dba88e",
+      "id": "29c460a2-3c25-44f5-b318-a25e5b30c582",
       "name": "Solo lista de espera",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
@@ -145,7 +145,7 @@
           },
           "conditions": [
             {
-              "id": "003a1312-ccad-4c82-af3c-118d7ff05173",
+              "id": "d47c58a6-c1c9-4c70-b9ff-37326ab4026c",
               "leftValue": "={{ $json.estado }}",
               "rightValue": "LISTA_ESPERA",
               "operator": {
@@ -160,7 +160,7 @@
       }
     },
     {
-      "id": "22aa947f-97ad-412f-bc76-8df194241763",
+      "id": "1dd53147-08bb-4bd7-a48f-1e5ab8443169",
       "name": "Ordenar por fecha_inscripcion ASC",
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
@@ -182,7 +182,7 @@
       }
     },
     {
-      "id": "f6a82bda-33ec-4dce-b050-9f0abe930ee6",
+      "id": "7c0b4be3-b23a-4085-a5c6-34d5337f7ec7",
       "name": "Agrupar lista de espera",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
@@ -197,7 +197,7 @@
       }
     },
     {
-      "id": "d56b5622-24e1-4a64-9459-804e1f1968b3",
+      "id": "67c53068-8cd7-4da7-a5c8-399719af6244",
       "name": "Calcular cupos libres y elegir promovidos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -206,11 +206,11 @@
         160
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Cupos libres = capacidad - CONFIRMADAS. Se promueve en orden de llegada (fecha_inscripcion ASC).\nconst espera = ($json.espera || []).filter((i) => i && i.inscripcion_id);\nconst confirmadas = {};\nfor (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\nconst salida = [];\nfor (const e of filas('Eventos PUBLICADOS', 'evento_id')) {\n  if (fechaEvento(e) <= ahora) continue;\n  const libres = Number(e.capacidad) - (confirmadas[e.evento_id] || 0);\n  if (libres <= 0) continue;\n  const cola = espera.filter((i) => i.evento_id === e.evento_id)\n    .sort((a, b) => new Date(a.fecha_inscripcion) - new Date(b.fecha_inscripcion));\n  cola.slice(0, libres).forEach((i, idx) => salida.push({ json: {\n    inscripcion_id: i.inscripcion_id, estado: 'CONFIRMADA', orden_espera: '', fecha_actualizacion: ahora.toISOString(),\n    _meta: { evento: e, usuario_id: i.usuario_id, orden_lista: idx + 1, estado_anterior: i.estado },\n  } }));\n}\nreturn salida;\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Cupos libres = capacidad - (CONFIRMADAS + ASISTIO). Se promueve en orden de llegada (fecha_inscripcion ASC).\nconst espera = ($json.espera || []).filter((i) => i && i.inscripcion_id);\nconst confirmadas = {};\nfor (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (i.estado === 'CONFIRMADA' || i.estado === 'ASISTIO') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\nconst salida = [];\nfor (const e of filas('Eventos PUBLICADOS', 'evento_id')) {\n  if (fechaEvento(e) <= ahora) continue;\n  const libres = Number(e.capacidad) - (confirmadas[e.evento_id] || 0);\n  if (libres <= 0) continue;\n  const cola = espera.filter((i) => i.evento_id === e.evento_id)\n    .sort((a, b) => new Date(a.fecha_inscripcion) - new Date(b.fecha_inscripcion));\n  cola.slice(0, libres).forEach((i, idx) => salida.push({ json: {\n    inscripcion_id: i.inscripcion_id, estado: 'CONFIRMADA', orden_espera: '', fecha_actualizacion: ahora.toISOString(),\n    _meta: { evento: e, usuario_id: i.usuario_id, orden_lista: idx + 1, estado_anterior: i.estado },\n  } }));\n}\nreturn salida;\n"
       }
     },
     {
-      "id": "12efd9c7-6fc2-4c6c-962f-9bc3589684f3",
+      "id": "c2463eec-b27d-4388-9544-77fb8889b8d6",
       "name": "Promover inscripción",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -226,7 +226,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GovSEfodhNv2w-rv9ilLi9OL2wyQJsDRfSuR0OaFZuI"
+          "value": "1YPxPL74DMKBSFzJ5jy6zRPVwv7pKMlKtNNc5tVoV8-E"
         },
         "sheetName": {
           "__rl": true,
@@ -248,13 +248,13 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
     },
     {
-      "id": "b824fa8a-09f8-41a2-aa3f-cafc23c82acb",
+      "id": "28b8f2d0-12b0-49b1-a49f-ada0632a7d92",
       "name": "Preparar notificación de cupo",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -267,7 +267,7 @@
       }
     },
     {
-      "id": "ee68ee82-6fcd-4c2c-ae76-9afa0c552fe8",
+      "id": "dae101f6-5957-483f-b8e3-55905f7c7a36",
       "name": "Notificar (WF09)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -280,7 +280,7 @@
         "workflowId": {
           "__rl": true,
           "mode": "id",
-          "value": "NRT3LHofBWlOl8Sq"
+          "value": "sIvD9W9vGFegdxp8"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -297,7 +297,7 @@
       }
     },
     {
-      "id": "187c8c85-5b2c-4799-9c72-4ce406f00a23",
+      "id": "87c0d5a4-128d-4625-8997-f502741b0452",
       "name": "Fila de reasignación",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -310,7 +310,7 @@
       }
     },
     {
-      "id": "9709dc83-9505-451b-bc7d-acf16bddffa0",
+      "id": "09bf4f61-4bd9-4eaa-86a1-04bc2cd839be",
       "name": "Registrar reasignación",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -326,7 +326,7 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "14B7e0HTwRwYzfC5NbbOMdhj8gwnBawzpNL4zWPTUivA"
+          "value": "1GMHqU0WILM7luszmbHEQWsjtPYff-o7aKz1H9Np7Few"
         },
         "sheetName": {
           "__rl": true,
@@ -346,7 +346,7 @@
       },
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "TcJ57zh8J0fcVSXs",
+          "id": "kSujEEG4upnaVTBh",
           "name": "Google Sheets account"
         }
       }
@@ -494,6 +494,6 @@
   },
   "pinData": {},
   "active": true,
-  "id": "8WDzzScPBcVIbf7l",
+  "id": "RyFAqfQzPxk2qTUv",
   "tags": []
 }
