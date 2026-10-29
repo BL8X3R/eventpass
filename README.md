@@ -1,7 +1,7 @@
 # EventPass
 
 **Estudiantes:** Fabian y Rueda
-**Aplicación publicada (Vercel):** https://eventpass-zeta.vercel.app
+**Aplicación publicada (Vercel):** https://eventpass-beige.vercel.app
 **Repositorio:** https://github.com/BL8X3R/eventpass
 
 EventPass es una aplicación web pública para descubrir e inscribirse en eventos de la comunidad tech y de emprendimiento (meetups, hackatones, talleres, networking). El frontend es un cliente estático publicado en Vercel; **toda la lógica de negocio vive en n8n**: validaciones, estados, cupos, lista de espera, idempotencia, persistencia en Google Sheets y notificaciones por Gmail y Telegram. Un asistente con IA (Google Gemini) responde dudas en modo solo lectura.

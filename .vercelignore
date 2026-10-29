@@ -1,0 +1,8 @@
+# Vercel solo necesita el frontend y el script de build.
+/*
+!/frontend
+!/scripts
+/scripts/*
+!/scripts/build.mjs
+!/package.json
+!/vercel.json
