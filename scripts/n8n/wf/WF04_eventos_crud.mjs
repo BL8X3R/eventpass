@@ -80,7 +80,7 @@ return [{ json: { ...fila, _status: 201, _body: { ok: true, mensaje: 'Evento cre
 
   w.code('Buscar evento por ID', `
 const e = $('Validar formulario').first().json.evento;
-const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;
+const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;
 return ok(200, { ...e, inscritos_confirmados: confirmadas }, 'Evento encontrado.', { _auditoria: { evento_id: e.evento_id, accion: 'CONSULTAR', resultado: 'OK', detalle: '' } });
 `, [5, 1]);
 
@@ -92,7 +92,7 @@ if (['CANCELADO'].includes(e.estado)) return fallo(409, 'EVENTO_CANCELADO', 'Un 
 const cambios = Object.fromEntries(Object.entries(v.datos).filter(([k, val]) => String(e[k] ?? '') !== String(val)));
 if (!Object.keys(cambios).length) return fallo(400, 'SIN_CAMBIOS', 'No escribiste ningún dato distinto al actual.', { aplicar: false, ...audit('ERROR', 'Sin cambios') });
 if (cambios.capacidad) {
-  const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && i.estado === 'CONFIRMADA').length;
+  const confirmadas = filas('Leer Inscripciones', 'inscripcion_id').filter((i) => i.evento_id === e.evento_id && ['CONFIRMADA', 'ASISTIO'].includes(i.estado)).length;
   if (Number(cambios.capacidad) < confirmadas) return fallo(409, 'CAPACIDAD_INSUFICIENTE', 'Hay ' + confirmadas + ' inscripciones confirmadas; la capacidad no puede ser menor.', { aplicar: false, ...audit('ERROR', 'Capacidad menor a confirmadas') });
 }
 const fila = { evento_id: e.evento_id, ...cambios, fecha_actualizacion: ahora.toISOString() };

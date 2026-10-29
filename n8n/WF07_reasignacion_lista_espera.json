@@ -14,8 +14,7 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes",
-              "minutesInterval": 5
+              "field": "minutes"
             }
           ]
         }
@@ -36,7 +35,6 @@
         160
       ],
       "parameters": {
-        "operation": "read",
         "documentId": {
           "__rl": true,
           "mode": "id",
@@ -64,14 +62,14 @@
       "alwaysOutputData": true,
       "position": [
         480,
-        160
+        176
       ],
       "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose",
+            "typeValidation": "strict",
             "version": 2
           },
           "conditions": [
@@ -105,7 +103,6 @@
         160
       ],
       "parameters": {
-        "operation": "read",
         "documentId": {
           "__rl": true,
           "mode": "id",
@@ -140,7 +137,7 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose",
+            "typeValidation": "strict",
             "version": 2
           },
           "conditions": [
@@ -173,8 +170,7 @@
         "sortFieldsUi": {
           "sortField": [
             {
-              "fieldName": "fecha_inscripcion",
-              "order": "ascending"
+              "fieldName": "fecha_inscripcion"
             }
           ]
         },
@@ -206,7 +202,7 @@
         160
       ],
       "parameters": {
-        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Cupos libres = capacidad - CONFIRMADAS. Se promueve en orden de llegada (fecha_inscripcion ASC).\nconst espera = ($json.espera || []).filter((i) => i && i.inscripcion_id);\nconst confirmadas = {};\nfor (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (i.estado === 'CONFIRMADA') confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\nconst salida = [];\nfor (const e of filas('Eventos PUBLICADOS', 'evento_id')) {\n  if (fechaEvento(e) <= ahora) continue;\n  const libres = Number(e.capacidad) - (confirmadas[e.evento_id] || 0);\n  if (libres <= 0) continue;\n  const cola = espera.filter((i) => i.evento_id === e.evento_id)\n    .sort((a, b) => new Date(a.fecha_inscripcion) - new Date(b.fecha_inscripcion));\n  cola.slice(0, libres).forEach((i, idx) => salida.push({ json: {\n    inscripcion_id: i.inscripcion_id, estado: 'CONFIRMADA', orden_espera: '', fecha_actualizacion: ahora.toISOString(),\n    _meta: { evento: e, usuario_id: i.usuario_id, orden_lista: idx + 1, estado_anterior: i.estado },\n  } }));\n}\nreturn salida;\n"
+        "jsCode": "// ---- utilidades EventPass ----\nconst ahora = new Date();\nconst genId = (p) => p + '-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();\nconst filas = (nodo, clave) => { try { return $(nodo).all().map((i) => i.json).filter((r) => r && r[clave] !== undefined && r[clave] !== null && String(r[clave]) !== ''); } catch (e) { return []; } };\nconst ok = (status, data, mensaje, extra = {}) => [{ json: { ...extra, _status: status, _body: { ok: true, mensaje, data } } }];\nconst fallo = (status, codigo, mensaje, extra = {}) => [{ json: { ruta: 'error', ...extra, _status: status, _body: { ok: false, error: { codigo, mensaje } } } }];\nconst sinFila = (r) => { const { row_number, ...resto } = r; return resto; };\nconst fechaEvento = (ev) => new Date(String(ev.fecha).slice(0, 10) + 'T' + (String(ev.hora || '00:00').slice(0, 5)) + ':00-05:00');\nconst validarSesion = (token, sesiones, usuarios) => {\n  if (!token) return { ok: false, codigo: 'SESION_REQUERIDA', mensaje: 'Inicia sesión para continuar.' };\n  const s = sesiones.find((x) => x.session_token === String(token));\n  if (!s) return { ok: false, codigo: 'SESION_INVALIDA', mensaje: 'Tu sesión no es válida. Inicia sesión de nuevo.' };\n  if (s.estado !== 'ACTIVA') return { ok: false, codigo: 'SESION_' + s.estado, mensaje: 'Tu sesión terminó. Inicia sesión de nuevo.', sesion: s };\n  if (new Date(s.expira_en) <= ahora) return { ok: false, codigo: 'SESION_EXPIRADA', mensaje: 'Tu sesión expiró. Inicia sesión de nuevo.', sesion: s, expirada: true };\n  const u = usuarios.find((x) => x.usuario_id === s.usuario_id);\n  if (!u || u.estado !== 'ACTIVO') return { ok: false, codigo: 'USUARIO_INACTIVO', mensaje: 'Esta cuenta está desactivada.', sesion: s, inactivo: true };\n  return { ok: true, sesion: s, usuario: u };\n};\n// ---- lógica del nodo ----\n\n// Cupos libres = capacidad - (CONFIRMADAS + ASISTIO). Se promueve en orden de llegada (fecha_inscripcion ASC).\nconst espera = ($json.espera || []).filter((i) => i && i.inscripcion_id);\nconst confirmadas = {};\nfor (const i of filas('Leer Inscripciones', 'inscripcion_id')) if (['CONFIRMADA', 'ASISTIO'].includes(i.estado)) confirmadas[i.evento_id] = (confirmadas[i.evento_id] || 0) + 1;\nconst salida = [];\nfor (const e of filas('Eventos PUBLICADOS', 'evento_id')) {\n  if (fechaEvento(e) <= ahora) continue;\n  const libres = Number(e.capacidad) - (confirmadas[e.evento_id] || 0);\n  if (libres <= 0) continue;\n  const cola = espera.filter((i) => i.evento_id === e.evento_id)\n    .sort((a, b) => new Date(a.fecha_inscripcion) - new Date(b.fecha_inscripcion));\n  cola.slice(0, libres).forEach((i, idx) => salida.push({ json: {\n    inscripcion_id: i.inscripcion_id, estado: 'CONFIRMADA', orden_espera: '', fecha_actualizacion: ahora.toISOString(),\n    _meta: { evento: e, usuario_id: i.usuario_id, orden_lista: idx + 1, estado_anterior: i.estado },\n  } }));\n}\nreturn salida;\n"
       }
     },
     {
@@ -490,7 +486,8 @@
     "saveManualExecutions": true,
     "timezone": "America/Bogota",
     "executionOrder": "v1",
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "binaryMode": "separate"
   },
   "pinData": {},
   "active": true,

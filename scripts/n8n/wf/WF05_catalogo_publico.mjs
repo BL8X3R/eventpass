@@ -8,7 +8,7 @@ export default function (cfg) {
   // BORRADOR nunca es público. CERRADO y CANCELADO se muestran marcados, sin inscripción.
   w.filtro('Solo eventos publicables', 'estado', ['PUBLICADO', 'CERRADO', 'CANCELADO'], [2, 1]);
   w.leer('Leer Inscripciones', 'EP06', 'Inscripciones', [3, 1]);
-  w.filtro('Inscripciones activas', 'estado', ['CONFIRMADA', 'LISTA_ESPERA'], [4, 1]);
+  w.filtro('Inscripciones activas', 'estado', ['CONFIRMADA', 'LISTA_ESPERA', 'ASISTIO'], [4, 1]);
   w.agrupar('Agrupar inscripciones', 'inscripciones', [5, 1]);
 
   w.code('Calcular cupos y armar respuesta', `
@@ -22,7 +22,7 @@ const inscripciones = ($json.inscripciones || []).filter((i) => i && i.inscripci
 const conteo = {};
 for (const i of inscripciones) {
   conteo[i.evento_id] ??= { confirmadas: 0, espera: 0 };
-  if (i.estado === 'CONFIRMADA') conteo[i.evento_id].confirmadas++;
+  if (['CONFIRMADA', 'ASISTIO'].includes(i.estado)) conteo[i.evento_id].confirmadas++;
   else conteo[i.evento_id].espera++;
 }
 const HORAS_PROXIMO = 48;

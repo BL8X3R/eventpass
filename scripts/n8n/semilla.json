@@ -98,6 +98,12 @@
         { "nombre": "Conversaciones", "columnas": ["conversation_id", "usuario_id", "visitor_id", "fecha_inicio", "fecha_ultima_interaccion", "estado"], "filas": [] },
         { "nombre": "Mensajes", "columnas": ["message_id", "conversation_id", "usuario_id", "visitor_id", "rol", "mensaje", "timestamp"], "filas": [] }
       ]
+    },
+    {
+      "clave": "EP11", "titulo": "EP11_Checkin",
+      "hojas": [
+        { "nombre": "Checkins", "columnas": ["checkin_id", "inscripcion_id", "evento_id", "usuario_id", "fecha_checkin", "resultado", "detalle"], "filas": [] }
+      ]
     }
   ]
 }

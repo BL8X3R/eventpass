@@ -112,7 +112,9 @@ textarea { min-height: 90px; resize: vertical; }
 .aviso-error { color: var(--error); }
 .aviso-exito { color: var(--exito); }
 .aviso-info { color: var(--cobalto); }
+.aviso-alerta { color: var(--aviso); }
 .aviso .boton { margin-top: 10px; }
+.aviso .datos { margin: 10px 0 0; color: var(--tinta); }
 
 .toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 60;
@@ -216,6 +218,7 @@ textarea { min-height: 90px; resize: vertical; }
 .estado-confirmada { color: var(--exito); }
 .estado-lista_espera { color: var(--aviso); }
 .estado-cancelada { color: var(--tinta-2); }
+.estado-asistio { color: var(--cobalto); }
 
 /* Fila de casillas: cada casilla es un cupo (o un grupo de cupos en eventos grandes). */
 .cupos { display: grid; gap: 6px; }

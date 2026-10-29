@@ -85,7 +85,7 @@ function recordarTelegram() {
   if (s) { s.telegram_vinculado = true; sesion.guardar(s); }
 }
 
-const NOMBRE_ESTADO = { CONFIRMADA: 'Cupo confirmado', LISTA_ESPERA: 'En lista de espera', CANCELADA: 'Cancelada' };
+const NOMBRE_ESTADO = { CONFIRMADA: 'Cupo confirmado', LISTA_ESPERA: 'En lista de espera', CANCELADA: 'Cancelada', ASISTIO: 'Asististe' };
 
 // ---------- navegación ----------
 function pintarNav() {
@@ -93,8 +93,8 @@ function pintarNav() {
   const ruta = location.hash.split('?')[0] || '#/';
   const enlace = (href, texto, extra = '') => `<a href="${href}" ${ruta === href || (href !== '#/' && ruta.startsWith(href)) ? 'aria-current="page"' : ''} ${extra}>${texto}</a>`;
   nav.innerHTML = s
-    ? enlace('#/', 'Eventos') + enlace('#/cuenta', 'Mi cuenta') + '<a href="#/salir">Salir</a>'
-    : enlace('#/', 'Eventos') + enlace('#/ingresar', 'Ingresar') + '<a class="boton" href="#/registro">Crear cuenta</a>';
+    ? enlace('#/', 'Eventos') + enlace('#/checkin', 'Check-in') + enlace('#/cuenta', 'Mi cuenta') + '<a href="#/salir">Salir</a>'
+    : enlace('#/', 'Eventos') + enlace('#/checkin', 'Check-in') + enlace('#/ingresar', 'Ingresar') + '<a class="boton" href="#/registro">Crear cuenta</a>';
 }
 
 // ---------- vista: catálogo ----------
@@ -225,6 +225,7 @@ async function vistaDetalle(id) {
 
 function panelAccion(ev, insc, telegramOk) {
   const volver = encodeURIComponent('/evento/' + ev.evento_id);
+  if (insc?.estado === 'ASISTIO') return aviso('exito', NOMBRE_ESTADO.ASISTIO, 'Tu ingreso a este evento quedó registrado con el check-in.');
   if (insc) {
     return `${aviso(insc.estado === 'CONFIRMADA' ? 'exito' : 'info', NOMBRE_ESTADO[insc.estado],
       insc.estado === 'CONFIRMADA' ? `Tu credencial saldrá a nombre de ${insc.nombre_acreditacion}.` : `Estás en la posición ${insc.orden_espera || '?'} de la lista de espera. Si se libera un cupo, lo asignamos en orden de llegada y te avisamos.`)}
@@ -343,7 +344,8 @@ async function tabInscripciones(cont) {
           <span style="color:var(--tinta-2);font-size:.95rem">${esc(i.evento.fecha)} a las ${esc(i.evento.hora)}, ${esc(i.evento.lugar)}</span></div>
           <span class="estado estado-${i.estado.toLowerCase()}">${NOMBRE_ESTADO[i.estado]}${i.estado === 'LISTA_ESPERA' && i.orden_espera ? ' (posición ' + esc(i.orden_espera) + ')' : ''}</span>
         </div>
-        ${i.estado === 'CANCELADA' ? '' : `
+        ${i.estado === 'CONFIRMADA' ? `<p style="margin:10px 0 0">Código de ingreso: <code>${esc(i.inscripcion_id)}</code> · evento <code>${esc(i.evento_id)}</code></p>` : ''}
+        ${['CANCELADA', 'ASISTIO'].includes(i.estado) ? '' : `
         <details><summary>Editar datos de la credencial</summary>
           <form data-editar="${esc(i.inscripcion_id)}" novalidate>
             <div class="campo"><label for="na-${esc(i.inscripcion_id)}">Nombre en la credencial</label><input id="na-${esc(i.inscripcion_id)}" name="nombre_acreditacion" value="${esc(i.nombre_acreditacion)}" maxlength="80" required></div>
@@ -447,6 +449,57 @@ async function tabPerfil(cont) {
   } catch (e) { cont.innerHTML = avisoError(e); }
 }
 
+// ---------- vista: check-in en la puerta del evento (WF11) ----------
+const RESULTADO_CHECKIN = {
+  EXITOSO: { tipo: 'exito', titulo: 'Check-in realizado correctamente' },
+  DUPLICADO: { tipo: 'alerta', titulo: 'El ingreso ya había sido registrado' },
+  RECHAZADO: { tipo: 'error', titulo: 'Ingreso rechazado' },
+};
+
+function resultadoCheckin(resultado, mensaje, d) {
+  const r = RESULTADO_CHECKIN[resultado] || RESULTADO_CHECKIN.RECHAZADO;
+  const filas = d ? [
+    ['Asistente', d.nombre_acreditacion],
+    ['Evento', d.evento ? d.evento.nombre + ' (' + d.evento.evento_id + ')' : d.evento_id],
+    ['Inscripción', d.inscripcion_id],
+    ['Estado', NOMBRE_ESTADO[d.estado_inscripcion] || d.estado_inscripcion],
+    ['Registro', d.checkin_id + ' · ' + new Date(d.fecha_checkin).toLocaleString('es-CO', { timeZone: TZ })],
+  ].filter(([, v]) => v) : [];
+  const datos = filas.length ? `<dl class="datos">${filas.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '';
+  return aviso(r.tipo, r.titulo, mensaje, datos);
+}
+
+function vistaCheckin(params) {
+  app.innerHTML = `<section class="formulario-pagina"><div class="contenedor"><div class="panel">
+    <h1>Check-in</h1><p class="bajada">Registra el ingreso de un asistente con el código de su inscripción y el ID del evento.</p>
+    <form id="form-checkin" novalidate>
+      <div class="campo"><label for="inscripcion_id">ID de la inscripción</label><input id="inscripcion_id" name="inscripcion_id" value="${esc(params.get('inscripcion') || '')}" placeholder="INS-…" autocomplete="off" required></div>
+      <div class="campo"><label for="evento_id">ID del evento</label><input id="evento_id" name="evento_id" value="${esc(params.get('evento') || '')}" placeholder="EVT-…" list="lista-eventos" autocomplete="off" required><datalist id="lista-eventos"></datalist></div>
+      <div data-mensaje></div>
+      <button class="boton" type="submit" style="width:100%">Registrar ingreso</button>
+    </form>
+    <div id="resultado-checkin" aria-live="polite" style="margin-top:16px"></div>
+  </div></div></section>`;
+  // Sugerencias de eventos; si el catálogo falla, el campo sigue aceptando cualquier ID.
+  (catalogoCache ? Promise.resolve(catalogoCache) : api.catalogo.listado().then((r) => (catalogoCache = r.data)))
+    .then((c) => { document.getElementById('lista-eventos').innerHTML = c.eventos.map((e) => `<option value="${esc(e.evento_id)}">${esc(e.nombre)}</option>`).join(''); })
+    .catch(() => {});
+  const form = document.getElementById('form-checkin');
+  const zona = document.getElementById('resultado-checkin');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    zona.innerHTML = '';
+    // Duplicado y rechazo llegan como ErrorApi con los datos del intento; se muestran aquí y no como fallo de red.
+    const r = await enviar(form, (d) => api.checkin.registrar(d.inscripcion_id, d.evento_id).catch((err) => {
+      if (err instanceof ErrorApi && err.data?.resultado) return { ok: false, mensaje: err.message, data: err.data };
+      throw err;
+    }));
+    if (!r) return;
+    zona.innerHTML = resultadoCheckin(r.data.resultado, r.mensaje, r.data);
+    if (r.data.resultado === 'EXITOSO') { catalogoCache = null; form.reset(); }
+  });
+}
+
 async function salir() {
   try { await api.auth.logout(); } catch { /* la sesión local se borra igual */ }
   sesion.borrar();
@@ -466,6 +519,7 @@ async function enrutar() {
   else if (partes[0] === 'ingresar') vistaIngresar(params);
   else if (partes[0] === 'registro') vistaRegistro(params);
   else if (partes[0] === 'cuenta') vistaCuenta(partes[1], params);
+  else if (partes[0] === 'checkin') vistaCheckin(params);
   else if (partes[0] === 'salir') await salir();
   else await vistaCatalogo(params);
 }

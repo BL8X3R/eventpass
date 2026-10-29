@@ -9,10 +9,11 @@ export const config = {
 };
 
 export class ErrorApi extends Error {
-  constructor(codigo, mensaje, status = 0) {
+  constructor(codigo, mensaje, status = 0, data = null) {
     super(mensaje);
     this.codigo = codigo;
     this.status = status;
+    this.data = data;
   }
 }
 
@@ -36,7 +37,7 @@ async function post(url, cuerpo) {
   try { datos = await res.json(); } catch { /* respuesta no JSON */ }
   if (!datos) throw new ErrorApi('RESPUESTA_INVALIDA', `El servidor respondió sin datos (HTTP ${res.status}). Si n8n está apagado, enciéndelo y vuelve a intentar.`, res.status);
   if (!res.ok || datos.ok === false) {
-    throw new ErrorApi(datos.error?.codigo || 'ERROR', datos.error?.mensaje || `Error HTTP ${res.status}.`, res.status);
+    throw new ErrorApi(datos.error?.codigo || 'ERROR', datos.error?.mensaje || `Error HTTP ${res.status}.`, res.status, datos.data || null);
   }
   return datos;
 }
@@ -88,6 +89,9 @@ export const api = {
     mias: () => webhook('inscripciones', { accion: 'mis_inscripciones', session_token: sesion.token() }),
     actualizar: (inscripcion_id, datos) => webhook('inscripciones', { accion: 'actualizar', session_token: sesion.token(), inscripcion_id, ...datos }),
     cancelar: (inscripcion_id) => webhook('inscripciones', { accion: 'cancelar', session_token: sesion.token(), inscripcion_id }),
+  },
+  checkin: {
+    registrar: (inscripcion_id, evento_id) => webhook('checkin', { inscripcion_id, evento_id, origen: 'WEB' }),
   },
   async chat(sessionId, texto) {
     if (!config.chatUrl) throw new ErrorApi('SIN_CONFIG', 'El asistente no está configurado (falta N8N_CHAT_URL).');

@@ -10,7 +10,7 @@ const AQUI = dirname(fileURLToPath(import.meta.url));
 const RAIZ = join(AQUI, '..', '..');
 const CONFIG = join(AQUI, 'config.local.json');
 const ORDEN = ['WF09_notificaciones', 'WF01_usuarios_crud', 'WF02_auth_sesiones', 'WF03_vinculacion_telegram', 'WF04_eventos_crud', 'WF05_catalogo_publico',
-  'WF06_inscripciones_crud', 'WF07_reasignacion_lista_espera', 'WF08_recordatorios', 'WF10_eventpass_assistant'];
+  'WF06_inscripciones_crud', 'WF07_reasignacion_lista_espera', 'WF08_recordatorios', 'WF10_eventpass_assistant', 'WF11_checkin_digital'];
 
 const cfg = existsSync(CONFIG) ? JSON.parse(readFileSync(CONFIG, 'utf8')) : {};
 cfg.n8nUrl ||= 'http://localhost:5678';
@@ -107,15 +107,35 @@ const comandos = {
     }
   },
 
+  // Crea un único archivo nuevo de la semilla (p. ej. EP11) sin tocar los que ya existen.
+  async 'setup-sheet'(clave) {
+    if (!clave) throw new Error('Indica la clave del archivo, p. ej. EP11');
+    if (cfg.sheets?.[clave]) throw new Error(clave + ' ya existe en config.local.json; no se crea de nuevo.');
+    const id = await subir('WF00_setup_google_sheets');
+    try {
+      await esperarWebhook('eventpass/setup-sheets');
+      const res = await fetch(cfg.n8nUrl + '/webhook/eventpass/setup-sheets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ solo: [clave] }) });
+      const data = await res.json();
+      if (!data.ok || data.archivos.length !== 1 || !data.archivos[0].spreadsheetId) throw new Error(JSON.stringify(data));
+      const a = data.archivos[0];
+      cfg.sheets[clave] = a.spreadsheetId;
+      cfg.sheetsUrls[clave] = a.url;
+      guardarCfg();
+      console.log(`✔ ${a.titulo}: ${a.url}`);
+    } finally {
+      await api('POST', `/workflows/${id}/deactivate`).catch(() => {});
+    }
+  },
+
   async push(solo) {
     const lista = solo ? ORDEN.filter((n) => n.startsWith(solo)) : ORDEN;
     for (const n of lista) await subir(n);
   },
 
-  async export() {
+  async export(solo) {
     const destino = join(RAIZ, 'n8n');
     mkdirSync(destino, { recursive: true });
-    for (const n of ['WF00_setup_google_sheets', ...ORDEN]) {
+    for (const n of ['WF00_setup_google_sheets', ...ORDEN].filter((x) => !solo || x.startsWith(solo))) {
       const id = cfg.workflows[n.slice(0, 4)];
       if (!id) { console.log('omitido (no subido):', n); continue; }
       const wf = await api('GET', `/workflows/${id}`);

@@ -27,7 +27,9 @@ const reemplazar = (v) => {
   return r;
 };
 const celda = (v, negrita) => ({ userEnteredValue: { stringValue: String(v ?? '') }, ...(negrita ? { userEnteredFormat: { textFormat: { bold: true } } } : {}) });
-return s.archivos.map((a) => ({ json: { clave: a.clave, cuerpo: {
+// "solo" (opcional) limita la creación a ciertas claves, p. ej. ["EP11"] para añadir un archivo nuevo.
+const solo = $('Webhook Setup').first().json.body?.solo;
+return s.archivos.filter((a) => !Array.isArray(solo) || solo.includes(a.clave)).map((a) => ({ json: { clave: a.clave, cuerpo: {
   properties: { title: a.titulo, locale: 'es_CO', timeZone: 'America/Bogota' },
   sheets: a.hojas.map((h) => ({
     properties: { title: h.nombre, gridProperties: { frozenRowCount: 1 } },
